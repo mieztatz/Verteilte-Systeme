@@ -17,7 +17,7 @@ public class Seat {
 		return this.number;
 	}
 	
-	public Fork getRightFork() {
+	public Fork getForkRight() {
 		return forkRight;
 	}
 	

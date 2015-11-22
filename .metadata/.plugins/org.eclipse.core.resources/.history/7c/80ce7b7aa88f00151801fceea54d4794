@@ -1,0 +1,90 @@
+package DiningPhilosophers;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Fork {
+	
+	private boolean isUsed;
+	private List<Philosopher> queue = new ArrayList<>();
+	
+	/**
+	 * Gibt die gesamte Queue mit allen wartenden Philosophen zurück.
+	 * Jede Gable verfügt über eine Queue.
+	 * In dieser Queue sind alle Philosophen vermerkt,
+	 * die als nächstes mit dieser Gabel essen möchten.
+	 * @return List<Philosophers> - Die Liste mit allen wartenden Philosophen.
+	 */
+	public List<Philosopher> getQueue() {
+		if (this.queue != null) {
+			return this.queue;
+		}
+		else
+			System.out.println("Es gibt keine Queue.");
+		return null;
+	}
+	
+	/**
+	 * Gibt den Philosophen zurück, der als nächster essen kann.
+	 * 
+	 * @return Philosopher - der Philosoph, welcher als nächster essen darf
+	 */
+	public Philosopher getNextPhilosopher() {
+		Philosopher philosopher = null;
+		if (!this.queue.isEmpty()) {
+			philosopher = this.queue.get(0);
+		}
+		return philosopher;
+	}
+	
+	/**
+	 * Gibt die Anzahl der wartenden Philosophen zurück.
+	 * @return int - die Anzahl der Elemente in der Queue.
+	 */
+	public int getNumberOfWaitingPhilosophers() {
+		return this.queue.size();
+	}
+	
+	public boolean addPhilosopher(final Philosopher philosopher) {
+		boolean isAdded = false;
+		isAdded = this.queue.add(philosopher);
+		System.out.println(philosopher.getPhilosopherName() + " hat sich in die Warteschlange eingereiht");
+		try {
+			System.out.println(philosopher.getPhilosopherName() + 
+					" warte, bis er als nächstes dran ist, an Position " + this.queue.indexOf(philosopher));
+			philosopher.wait();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return isAdded;
+	}
+	
+	public boolean isUsed() {
+		return this.isUsed;
+	}
+	
+	public void setUsed(final boolean isUsed) {
+		this.isUsed = isUsed;
+		if (!isUsed) {
+			activateNextPhilosopher();
+		}
+	}
+	
+	/**
+	 * Wenn die Gabel wieder freigeben ist, dann kann, wenn ein
+	 * Philosoph auf die Gabel wartet, dieser jetzt auf die Gabel
+	 * gestzt werden.
+	 */
+	public void activateNextPhilosopher() {
+		if (!this.queue.isEmpty()) {
+			//Philosoph aufwecken
+            System.out.println("Der Status des Philosophen " + this.queue.get(0).getPhilosopherName() + " ist: " this.queue.get(0).getState() + ".");
+			this.getQueue().get(0).notify();
+			try {
+				this.getQueue().get(0).eat();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}
