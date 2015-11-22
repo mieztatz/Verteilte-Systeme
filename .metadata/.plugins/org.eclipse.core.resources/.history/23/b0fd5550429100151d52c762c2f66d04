@@ -1,0 +1,88 @@
+package DiningPhilosophers;
+
+import java.util.Random;
+
+/**
+ * Hochschule für angewandte Wissenschaften München
+ * Verteilte Softwaresysteme - Praktikum
+ * WS 2015/16
+ * Aufgabe 3.3 Parallele Programmierung - Programm "Speisende Philosophen"
+ * @author Diana irmscher - diana.irmscher@hm.edu
+ */
+
+public class Philosopher extends Thread {
+	
+	/** Anzahl der Essvprgäng, welcher ein Philospoh bereits hatte.
+	 *  Nach drei Essvorgängen wird der Integer wieder auf Null gesetzt.
+	 *  Der Philospoh isst dann für eine längere Zeit nicht.
+	 */
+	private int process;
+	
+	/** Wenn der Philosoph isst, sitzt er temporär an einem Platz.
+	 *  Dieser Platz hat eine rechte Gabel.
+	 */
+	private Seat seat;
+	
+	/** Der Name eines Philosophen **/
+	private final String name;
+	
+	/** Diese Variable gibt an, ob der Philosoph Hunger hat oder nicht. **/
+	private boolean isHungry;
+	
+	/** Jeder Philosoph kennt den Tisch, an dem er sitzt
+	 * und kann somit jederzeit seinen linken und rechten Sitznachbarn ansprechen. **/
+	private final Table table;
+	
+	public Philosopher(final String name, final Table table) {
+		this.name = name;
+		this.process = 0;
+		this.isHungry = true;
+		this.table = table;
+	}
+	
+	/** Getter und Setter der Klassenvariablen **/
+	public boolean isHungry() {
+		return isHungry;
+	}
+
+	public void setHungry(boolean isHungry) {
+		this.isHungry = isHungry;
+	}
+	
+	public String getPhilosopherName() {
+		return this.name;
+	}
+	
+	public Seat getSeat() {
+		return this.seat;
+	}
+	
+	public void setSeat(final Seat seat) {
+		this.seat = seat;
+	}
+
+	public int getProcess() {
+		return process;
+	}
+
+	public void setProcess(final int process) {
+		this.process = process;
+	}
+	
+	/** LOGIK **/
+	
+	@Override
+	public void run() {
+		System.out.println(this.name + " ist aktiv.");
+		
+		while(true) {
+			//immer der gleiche Prozess, die Philosophen sollen essen und meditieren.
+			
+			//erst mal zum meditieren gehen
+			System.out.println(this.getPhilosopherName() + " meditiert für " + tmp/1000 + " Sekunden.");
+			this.sleep((new Random(1000).nextLong());
+			this.setHungry(true);
+		}
+	}
+
+}

@@ -1,0 +1,33 @@
+package DiningPhilosophers;
+
+/**
+ * Hochschule für angewandte Wissenschaften München
+ * Verteilte Softwaresysteme - Praktikum
+ * WS 2015/16
+ * Aufgabe 3.3 Parallele Programmierung - Programm "Speisende Philosophen"
+ * @author Diana irmscher - diana.irmscher@hm.edu
+ */
+
+public class Philosopher extends Thread {
+	
+	/** Anzahl der Essvprgäng, welcher ein Philospoh bereits hatte.
+	 *  Nach drei Essvorgängen wird der Integer wieder auf Null gesetzt.
+	 *  Der Philospoh isst dann für eine längere Zeit nicht.
+	 */
+	private int process;
+	
+	/** Wenn der Philosoph isst, sitzt er temporär an einem Platz.
+	 *  Dieser Platz hat eine rechte Gabel.
+	 */
+	private Seat seat;
+	
+	/** Der Name eines Philosophen **/
+	private final String name;
+	
+	@Override
+	public void run() {
+		
+		
+	}
+
+}

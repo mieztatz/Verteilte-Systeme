@@ -2,11 +2,29 @@ package DiningPhilosophers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+/**
+ * Hochschule für angewandte Wissenschaften München
+ * Verteilte Softwaresysteme - Praktikum
+ * WS 2015/16
+ * Aufgabe 3.3 Parallele Programmierung - Programm "Speisende Philosophen"
+ * @author Diana irmscher - diana.irmscher@hm.edu
+ */
 
 public class Fork {
 	
-	private boolean isUsed;
+	private AtomicBoolean isUsed = new AtomicBoolean(false);
+	
 	private List<Philosopher> queue = new ArrayList<>();
+	
+	//ist das auch über den Getter hier gelockt?
+	public boolean isUsed() {
+		return isUsed.get();
+	}
+	public void setUsed(final boolean isUsed) {
+		this.isUsed.set(isUsed);
+	}
 	
 	/**
 	 * Gibt die gesamte Queue mit allen wartenden Philosophen zurück.
@@ -37,43 +55,19 @@ public class Fork {
 		return philosopher;
 	}
 	
-	/**
-	 * Gibt die Anzahl der wartenden Philosophen zurück.
-	 * @return int - die Anzahl der Elemente in der Queue.
-	 */
-	public int getNumberOfWaitingPhilosophers() {
-		return this.queue.size();
-	}
-	
 	public boolean addPhilosopher(final Philosopher philosopher) {
 		boolean isAdded = false;
-//		synchronized (this) {
 			isAdded = this.queue.add(philosopher);
 			System.out.println(philosopher.getPhilosopherName() + " hat sich in die Warteschlange eingereiht");
 			try {
 				System.out.println(philosopher.getPhilosopherName() + 
 						" wartet, bis er als nächstes dran ist, an Position " + this.queue.indexOf(philosopher));
-				synchronized(philosopher) {
 					philosopher.wait();
-				}
 				System.out.println(philosopher.getPhilosopherName() + " ruft: \"Juhu, ich darf wieder essen!\"");
-				// der jetzt schon hungrig?
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-//			}
 		}
 		return isAdded;
-	}
-	
-	public boolean isUsed() {
-		return this.isUsed;
-	}
-	
-	public void setUsed(final boolean isUsed) {
-		this.isUsed = isUsed;
-		if (!isUsed) {
-			activateNextPhilosopher();
-		}
 	}
 	
 	/**
@@ -88,19 +82,12 @@ public class Fork {
             System.out.println("Der Status des Philosophen " 
 			              + nextPhilosopher.getPhilosopherName() + " ist: " + nextPhilosopher.getState() + ".");
             // kann nur aufgeweckt werden von letzten thread mit Monitor
-            synchronized(nextPhilosopher) {
-            	nextPhilosopher.notify();
-    			System.out.println("Der Status des Philosophen " 
-    		              + nextPhilosopher.getPhilosopherName() + " ist jetzt: " + nextPhilosopher.getState() + ".");
-    			//den Philosophen aus der Warteschlange entfernen
-    			this.queue.remove(nextPhilosopher);
-    			//und zum essen schicken
-				try {
-					nextPhilosopher.eat();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-            }
+            nextPhilosopher.notify();
+    		System.out.println("Der Status des Philosophen " + nextPhilosopher.getPhilosopherName() + " ist jetzt: " + nextPhilosopher.getState() + ".");
+    		//den Philosophen aus der Warteschlange entfernen
+    		this.queue.remove(nextPhilosopher);
+    		//jetzt wieder zum esenn gehen
 		}
 	}
+
 }

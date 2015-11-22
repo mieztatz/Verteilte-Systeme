@@ -25,7 +25,8 @@ public class Seat {
 	 * @return true, wenn die Gabel in Gebrauch ist - ansonsten false
 	 */
 	public boolean isSeatInUse() {
-		return forkRight.isUsed();
+//		return forkRight.isUsed();
+		return false;
 	}
 
 }

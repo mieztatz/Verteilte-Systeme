@@ -1,0 +1,13 @@
+package DiningPhilosophers;
+
+/**
+ * Hochschule für angewandte Wissenschaften München
+ * Verteilte Softwaresysteme - Praktikum
+ * WS 2015/16
+ * Aufgabe 3.3 Parallele Programmierung - Programm "Speisende Philosophen"
+ * @author Diana irmscher - diana.irmscher@hm.edu
+ */
+
+public class Philosopher {
+
+}
