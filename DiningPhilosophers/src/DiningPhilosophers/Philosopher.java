@@ -79,18 +79,21 @@ public class Philosopher extends Thread {
 			//immer der gleiche Prozess, die Philosophen sollen essen und meditieren.
 			
 			/** *********** MEDITIEREN *********** **/
-			Random r = new Random();
-			double tmp = r.nextInt(10000);
-			System.out.println(this.getPhilosopherName() + " meditiert für " + tmp/1000 + " Sekunden.");
-			try {
-				this.sleep((long)tmp);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			if (!this.isHungry()) {
+				Random r = new Random();
+				double tmp = r.nextInt(10000);
+				System.out.println(this.getPhilosopherName() + " meditiert für " + tmp/1000 + " Sekunden.");
+				try {
+					this.sleep((long)tmp);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				this.setHungry(true);
 			}
-			this.setHungry(true);
-			
 			/** *********** Essen *********** **/
-			this.setSeat(this.table.getAnySeat());
+			if (this.getSeat() == null) {
+				this.setSeat(this.table.getAnySeat());
+			}
 			System.out.println(this.getPhilosopherName() + " betrachtet Sitznummer " + seat.getNumber());
 			//Gabeln lokal zwischenspeichern
 			Fork forkRight = this.getSeat().getForkRight();
@@ -106,7 +109,7 @@ public class Philosopher extends Thread {
 					this.reserveFork(forkLeft);
 					System.out.println(this.getPhilosopherName() + " isst.");
 					try {
-						this.wait(5000);
+						Thread.sleep(5000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -121,11 +124,11 @@ public class Philosopher extends Thread {
 					for (int i = 0; i < 4 && !wasSuccessful; i++) {
 						System.out.println(this.getPhilosopherName() + " versucht zum " + i + ". Mal, die Gabel zu nehmen.");
 						if (!forkLeft.isUsed()) {
-							synchronized(this){
+
 								this.reserveFork(forkLeft);
 								System.out.println(this.getPhilosopherName() + " hat die linke Gabel beim " + i + ". Versuch bekommen.");
 								wasSuccessful = true;
-							}
+
 						} else {
 							try {
 								System.out.println(this.getPhilosopherName() + " hat die linke Gabel nicht bekommen und muss warten.");

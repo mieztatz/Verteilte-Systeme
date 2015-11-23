@@ -57,15 +57,19 @@ public class Fork {
 	
 	public boolean addPhilosopher(final Philosopher philosopher) {
 		boolean isAdded = false;
+		synchronized (this.getQueue()) {
 			isAdded = this.queue.add(philosopher);
-			System.out.println(philosopher.getPhilosopherName() + " hat sich in die Warteschlange eingereiht");
-			try {
-				System.out.println(philosopher.getPhilosopherName() + 
-						" wartet, bis er als nächstes dran ist, an Position " + this.queue.indexOf(philosopher));
-					philosopher.wait();
-				System.out.println(philosopher.getPhilosopherName() + " ruft: \"Juhu, ich darf wieder essen!\"");
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+		}
+		System.out.println(philosopher.getPhilosopherName() + " hat sich in die Warteschlange eingereiht");
+		try {
+			System.out.println(philosopher.getPhilosopherName() + 
+					" wartet, bis er als nächstes dran ist, an Position " + this.queue.indexOf(philosopher));
+			synchronized (philosopher) {
+				philosopher.wait();
+			}
+			System.out.println(philosopher.getPhilosopherName() + " ruft: \"Juhu, ich darf wieder essen!\"");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 		return isAdded;
 	}
@@ -82,10 +86,14 @@ public class Fork {
             System.out.println("Der Status des Philosophen " 
 			              + nextPhilosopher.getPhilosopherName() + " ist: " + nextPhilosopher.getState() + ".");
             // kann nur aufgeweckt werden von letzten thread mit Monitor
-            nextPhilosopher.notify();
+            synchronized (nextPhilosopher) {
+            	nextPhilosopher.notify();
+			}
     		System.out.println("Der Status des Philosophen " + nextPhilosopher.getPhilosopherName() + " ist jetzt: " + nextPhilosopher.getState() + ".");
     		//den Philosophen aus der Warteschlange entfernen
-    		this.queue.remove(nextPhilosopher);
+    		synchronized (this.queue) {
+    			this.queue.remove(nextPhilosopher);
+			}
     		//jetzt wieder zum esenn gehen
 		}
 	}
