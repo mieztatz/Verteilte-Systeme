@@ -29,15 +29,18 @@ public class Philosopher extends Thread {
 	/** Diese Variable gibt an, ob der Philosoph Hunger hat oder nicht. **/
 	private boolean isHungry;
 	
+	private final boolean isVeryHungry;
+	
 	/** Jeder Philosoph kennt den Tisch, an dem er sitzt
 	 * und kann somit jederzeit seinen linken und rechten Sitznachbarn ansprechen. **/
 	private final Table table;
 	
-	public Philosopher(final String name, final Table table) {
+	public Philosopher(final String name, final Table table, final boolean isVeryHungry) {
 		this.name = name;
 		this.process = 0;
 		this.isHungry = true;
 		this.table = table;
+		this.isVeryHungry = isVeryHungry;
 	}
 	
 	/** Getter und Setter der Klassenvariablen **/
@@ -83,10 +86,18 @@ public class Philosopher extends Thread {
 				Random r = new Random();
 				double tmp = r.nextInt(10000);
 				System.out.println(this.getPhilosopherName() + " meditiert für " + tmp/1000 + " Sekunden.");
-				try {
-					this.sleep((long)tmp);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+				if (this.isVeryHungry) {
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				} else {
+					try {
+						Thread.sleep((long)tmp);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
 				this.setHungry(true);
 			}

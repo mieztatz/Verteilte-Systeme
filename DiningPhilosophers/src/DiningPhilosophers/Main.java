@@ -16,11 +16,11 @@ public class Main {
 		final Table table = new Table(5);
 		
 		/** 5 Philosophen, die essen möchten */
-		final Philosopher[] philosophers = new Philosopher[]{new Philosopher("Longinos", table),
-		                                                     new Philosopher("Origenes", table),
-		                                                     new Philosopher("Plotin", table),
-		                                                     new Philosopher("Porphyrios", table),
-		                                                     new Philosopher("HeYan", table)};
+		final Philosopher[] philosophers = new Philosopher[]{new Philosopher("Longinos", table, false),
+		                                                     new Philosopher("Origenes", table, false),
+		                                                     new Philosopher("Plotin", table, false),
+		                                                     new Philosopher("Porphyrios", table, false),
+		                                                     new Philosopher("HeYan", table, true)};
 		
 		for(Philosopher p : philosophers) {
 			p.start();
