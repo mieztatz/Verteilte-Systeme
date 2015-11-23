@@ -22,8 +22,18 @@ public class Fork {
 	public boolean isUsed() {
 		return isUsed.get();
 	}
-	public void setUsed(final boolean isUsed) {
-		this.isUsed.set(isUsed);
+	/**
+	 * Atomically sets to the given value and returns the previous value.
+	 * @param isUsed
+	 * @return isUsed previously
+	 */
+	public boolean getAndSetUsed(final boolean isUsed) {
+		boolean previous = this.isUsed.getAndSet(isUsed);
+		
+		if (!(previous && this.isUsed()) && !this.isUsed()) {
+			this.activateNextPhilosopher();
+		}
+		return previous;
 	}
 	
 	/**

@@ -132,7 +132,7 @@ public class Philosopher extends Thread {
 						} else {
 							try {
 								System.out.println(this.getPhilosopherName() + " hat die linke Gabel nicht bekommen und muss warten.");
-								this.wait(1000);
+								Thread.sleep(1000);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
@@ -143,7 +143,7 @@ public class Philosopher extends Thread {
 						this.reserveFork(forkLeft);
 						System.out.println(this.getPhilosopherName() + " isst.");
 						try {
-							this.wait(5000);
+							Thread.sleep(5000);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
@@ -167,12 +167,26 @@ public class Philosopher extends Thread {
 		}
 	}
 
-	private void unblockFork(Fork fork) {
-		fork.setUsed(false);
+	/**
+	 * Setzt den übergeben Wert.
+	 * Liefert true, wenn der Wert getoggelt wurde, ansonsten false.
+	 * @param fork
+	 * @return
+	 */
+	private boolean unblockFork(Fork fork) {
+		boolean previously = fork.getAndSetUsed(false);
+		return !(previously && fork.isUsed());
 	}
 
-	private void reserveFork(Fork forkRight) {
-		forkRight.setUsed(true);
+	/**
+	 * Setzt den übergeben Wert.
+	 * Liefert true, wenn der Wert getoggelt wurde, ansonsten false.
+	 * @param fork
+	 * @return
+	 */
+	private boolean reserveFork(Fork fork) {
+		boolean previously = fork.getAndSetUsed(true);
+		return !(previously && fork.isUsed());
 	}
 
 }
