@@ -1,0 +1,31 @@
+package DiningPhilosophersDistribute;
+
+import java.rmi.RemoteException;
+
+public class ConnectionHelper implements IConnectionHelper{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1498480465650920580L;
+	
+	private ITable[] tables = new ITable[2];
+
+	@Override
+	public ITable getTable(int number) throws RemoteException {
+		
+		return tables[number - 1];
+	}
+
+	@Override
+	public void setTable(Table table) throws RemoteException {
+		tables[table.getNumber() - 1] = table;
+		System.out.println("Tisch mit der Nummer " + table.getNumber() + " hat sich angemeldet.");
+	}
+
+	@Override
+	public int getNumberOfTables() throws RemoteException {
+		return tables.length;
+	}
+
+}

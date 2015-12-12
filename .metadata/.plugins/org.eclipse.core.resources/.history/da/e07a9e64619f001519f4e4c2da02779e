@@ -1,0 +1,20 @@
+package DiningPhilosophersDistribute;
+
+import java.io.Serializable;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface IConnectionHelper extends Remote, Serializable {
+	
+	
+	public ITable getTable(final int number) throws RemoteException;
+	
+	public void setTable(final Table table) throws RemoteException;
+	
+	public int getNumberOfTables() throws RemoteException;
+	
+	boolean containsTable(final ITable table) throws RemoteException;
+	
+	public ITable getAnotherTabel(final int tableNumber) throws RemoteException;
+
+}

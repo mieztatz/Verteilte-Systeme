@@ -1,0 +1,21 @@
+package DiningPhilosophersDistribute;
+
+import java.io.Serializable;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface ITable extends Remote, Serializable {
+	
+	ISeat getLeftNeighbour(final ISeat other) throws RemoteException;
+	
+	ISeat getAnySeat() throws RemoteException;
+	
+	int getNumber() throws RemoteException;
+	
+	ISeat getLastSeatOfTable() throws RemoteException;
+	
+	
+	int getNumberOfSeats();
+	
+
+}
