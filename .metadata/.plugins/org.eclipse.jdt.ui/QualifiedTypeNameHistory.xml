@@ -2,9 +2,25 @@
 <qualifiedTypeNameHistroy>
 <fullyQualifiedTypeName name="DiningPhilosophers.Fork"/>
 <fullyQualifiedTypeName name="DiningPhilosophers.Philosopher"/>
-<fullyQualifiedTypeName name="java.lang.Thread"/>
-<fullyQualifiedTypeName name="java.lang.Override"/>
 <fullyQualifiedTypeName name="java.util.List"/>
 <fullyQualifiedTypeName name="java.util.Random"/>
 <fullyQualifiedTypeName name="java.util.concurrent.atomic.AtomicBoolean"/>
+<fullyQualifiedTypeName name="helloWorld.Hello"/>
+<fullyQualifiedTypeName name="java.rmi.registry.Registry"/>
+<fullyQualifiedTypeName name="java.lang.Exception"/>
+<fullyQualifiedTypeName name="java.rmi.registry.LocateRegistry"/>
+<fullyQualifiedTypeName name="DiningPhilosophersDistribute.ISeat"/>
+<fullyQualifiedTypeName name="java.rmi.Remote"/>
+<fullyQualifiedTypeName name="java.io.Serializable"/>
+<fullyQualifiedTypeName name="java.rmi.server.UnicastRemoteObject"/>
+<fullyQualifiedTypeName name="DiningPhilosophersDistribute.ConnectionHelper"/>
+<fullyQualifiedTypeName name="javax.swing.text.TabExpander"/>
+<fullyQualifiedTypeName name="DiningPhilosophersDistribute.Table"/>
+<fullyQualifiedTypeName name="DiningPhilosophersDistribute.ITable"/>
+<fullyQualifiedTypeName name="DiningPhilosophersDistribute.Philosopher"/>
+<fullyQualifiedTypeName name="java.lang.Override"/>
+<fullyQualifiedTypeName name="DiningPhilosophersDistribute.IFork"/>
+<fullyQualifiedTypeName name="java.lang.Thread"/>
+<fullyQualifiedTypeName name="DiningPhilosophersDistribute.IConnectionHelper"/>
+<fullyQualifiedTypeName name="java.rmi.RemoteException"/>
 </qualifiedTypeNameHistroy>
