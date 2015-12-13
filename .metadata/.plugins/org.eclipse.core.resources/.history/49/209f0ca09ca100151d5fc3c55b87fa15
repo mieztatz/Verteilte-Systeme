@@ -1,0 +1,125 @@
+package DiningPhilosophersDistribute;
+
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+public class ConnectionHelper implements IConnectionHelper{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1498480465650920580L;
+	
+//	private ITable[] tables = new ITable[2];
+	private final List<ITable> listOfTables = new ArrayList<>();
+	private ISeat[] seats;
+
+	@Override
+	public ITable getTable(int number) throws RemoteException {
+		ITable table = null;
+		for(ITable t : listOfTables) {
+			if (t.getNumber() == number) {
+				table = t;
+			}
+		}
+		return table;
+	}
+
+	/**
+	 * Meldet einen neuen Tisch an.
+	 * Wenn ein neuer Tisch dazugekommen ist,
+	 * muss dieser mit allen anderen verlinkt werden.
+	 */
+	@Override
+	public void setTable(Table table) throws RemoteException {
+		listOfTables.add(table);
+		//tables[table.getNumber() - 1] = table;
+		System.out.println("Tisch mit der Nummer " + table.getNumber() + " hat sich angemeldet.");
+		
+		this.seats = linkAllSeats();
+	}
+	
+	/**
+	 * Diese Methode verlinkt alle Sitze miteinander
+	 * und macht aus vielen Tischen einen Tisch.
+	 * @return
+	 * @throws RemoteException
+	 */
+	private ISeat[] linkAllSeats() throws RemoteException {
+		int numberOfAllSeats = 0;
+		for(ITable t : listOfTables) {
+			numberOfAllSeats += t.getNumberOfSeats();
+		}
+		ISeat[] seats = new ISeat[numberOfAllSeats];
+		for (int i = 0; i < numberOfAllSeats; i++) {
+			for (ITable t : listOfTables) {
+				for (int j = 0; j < t.getSeats().length; j++) {
+					seats[i] = t.getSeats()[j];
+				}
+			}
+		}
+		return seats;
+	}
+
+	@Override
+	public int getNumberOfTables() throws RemoteException {
+		return listOfTables.size();
+		//return tables.length;
+	}
+	
+	public boolean containsTable(final ITable table){
+		return listOfTables.contains(table);
+	}
+	
+	//ToDo: kann man das vielleicht effizienter lösen?
+	public ITable getAnotherTabel(final int tableNumber) {
+		ITable table = null;
+		Random r = new Random();
+		int randomInteger = 0;
+		randomInteger = r.nextInt(listOfTables.size());
+		
+		ITable tabel = listOfTables.get(randomInteger);
+		
+		try {
+			while (tabel.getNumber() == tableNumber) {
+				randomInteger = r.nextInt(listOfTables.size());
+				tabel = listOfTables.get(randomInteger);
+			}
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return table;
+	}
+
+	/**
+	 * Gibt einen Platz aus von irgendeinem Tisch zurück.
+	 */
+	public ISeat getAnySeatFormAllTables() {
+		Random r = new Random();
+		int randomInteger = 0;
+		randomInteger = r.nextInt(seats.length);
+		return seats[randomInteger];
+	}
+	
+	/**
+	 * Gibt von einem Sitzplatz den linken Nachbarn zurück.
+	 * Der linke Nachbar kann hierbei am gleichen Tisch sein,
+	 * oder auch schon am Nachbartisch.
+	 * @param seat
+	 * @return
+	 */
+	public ISeat getLeftNeighbourFormAllTables(final ISeat seat) {
+		ISeat neighbour = null;
+		boolean wasFound = false;
+		for (int i = 0; i < seats.length && wasFound; i++) {
+			if (seat.equals(seats[i])) {
+				neighbour = seats[i+1];
+				wasFound = true;
+			}
+		}
+		return null;
+	}
+}

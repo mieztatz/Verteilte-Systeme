@@ -27,10 +27,20 @@ public class MainTwo {
 		
 		stub.setTable(table);
 		
-		Philosopher philosopher = new Philosopher("Fabian", table, stub, false);
+		Philosopher[] philosophers = new Philosopher[]{new Philosopher("Fabian", table, stub, false),
+													   new Philosopher("Luca", table, stub, false),
+													   new Philosopher("Benni", table, stub, false),
+													   new Philosopher("Max", table, stub, false),
+													   new Philosopher("Fabio", table, stub, false),
+													   new Philosopher("Sabine", table, stub, false),
+													   new Philosopher("Matti", table, stub, false),
+													   new Philosopher("Nico", table, stub, false),
+													   new Philosopher("Marius", table, stub, false),
+													   new Philosopher("Anselm", table, stub, false)};
 		
-		//System.out.println(stub.getNumberOfTables());
-		philosopher.start();
+		for (int i = 0; i < philosophers.length; i++) {
+			philosophers[i].start();
+		}
 		
 		} catch (Exception e) {
 			System.err.println("Client exception: " + e.toString());

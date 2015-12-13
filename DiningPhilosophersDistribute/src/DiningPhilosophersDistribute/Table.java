@@ -21,9 +21,6 @@ public class Table implements ITable {
 	private static final int DEFAULT_NUMBER_OF_SEATS = 10;
 	private final ISeat[] seats;
 	
-	/** Schüssel mit Spaghetti */
-	private boolean bowl;
-	
 	public Table(final int numberOfSeats, final int number, final IConnectionHelper connectionHelper) {
 		this.numberOfSeats = numberOfSeats;
 		this.number = number;
@@ -34,7 +31,6 @@ public class Table implements ITable {
 			seats = new ISeat[DEFAULT_NUMBER_OF_SEATS];
 		}
 		initSeats();
-		bowl = true;
 	}
 	
 	public int getNumber() {

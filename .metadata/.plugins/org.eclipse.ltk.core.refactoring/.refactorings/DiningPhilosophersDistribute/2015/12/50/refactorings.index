@@ -1,3 +1,5 @@
 1449930204397	Rename field 'table'
 1449930219192	Rename method 'linkAllTables'
 1449931281698	Rename method 'getAnySeatFormWholeTabel'
+1450021151078	Rename local variable 'hasBecomeForkRight'
+1450021171937	Rename local variable 'hasBecameForkLeft'

@@ -32,8 +32,15 @@ public class MainOne {
 			stub.setTable(table);
 			
 			Philosopher[] philosophers = new Philosopher[]{ new Philosopher("Lukas", table, stub, false),
-															//new Philosopher("Robert", table, stub, false),
-															//new Philosopher("Bauer0", table, stub, false)
+															new Philosopher("Robert", table, stub, false),
+															new Philosopher("Bauer0", table, stub, false),
+															new Philosopher("Linda", table, stub, false),
+															new Philosopher("Tom", table, stub, false),
+															new Philosopher("Ersin", table, stub, false),
+															new Philosopher("Alu", table, stub, false),
+															new Philosopher("Markus", table, stub, false),
+															new Philosopher("Moritz", table, stub, false),
+															new Philosopher("Chris Pohl", table, stub, false)
 					};
 			
 			for (int i = 0; i < philosophers.length; i++) {
