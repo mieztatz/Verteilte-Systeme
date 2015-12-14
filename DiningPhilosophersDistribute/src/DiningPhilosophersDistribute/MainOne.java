@@ -40,7 +40,11 @@ public class MainOne {
 															new Philosopher("Alu", table, stub, false),
 															new Philosopher("Markus", table, stub, false),
 															new Philosopher("Moritz", table, stub, false),
-															new Philosopher("Chris Pohl", table, stub, false)
+															new Philosopher("Chris Pohl", table, stub, false),
+															new Philosopher("Friedrich", table, stub, false),
+															new Philosopher("Ludwig", table, stub, false),
+															new Philosopher("Hans", table, stub, false),
+															new Philosopher("Martin", table, stub, false)
 					};
 			
 			for (int i = 0; i < philosophers.length; i++) {

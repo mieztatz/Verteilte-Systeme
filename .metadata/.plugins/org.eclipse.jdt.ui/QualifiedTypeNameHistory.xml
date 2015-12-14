@@ -11,9 +11,7 @@
 <fullyQualifiedTypeName name="java.rmi.Remote"/>
 <fullyQualifiedTypeName name="java.io.Serializable"/>
 <fullyQualifiedTypeName name="java.rmi.server.UnicastRemoteObject"/>
-<fullyQualifiedTypeName name="DiningPhilosophersDistribute.ConnectionHelper"/>
 <fullyQualifiedTypeName name="javax.swing.text.TabExpander"/>
-<fullyQualifiedTypeName name="DiningPhilosophersDistribute.Philosopher"/>
 <fullyQualifiedTypeName name="java.lang.Override"/>
 <fullyQualifiedTypeName name="DiningPhilosophersDistribute.IFork"/>
 <fullyQualifiedTypeName name="java.lang.Thread"/>
@@ -24,4 +22,6 @@
 <fullyQualifiedTypeName name="DiningPhilosophersDistribute.Table"/>
 <fullyQualifiedTypeName name="DiningPhilosophersDistribute.ISeat"/>
 <fullyQualifiedTypeName name="DiningPhilosophersDistribute.ITable"/>
+<fullyQualifiedTypeName name="DiningPhilosophersDistribute.Philosopher"/>
+<fullyQualifiedTypeName name="DiningPhilosophersDistribute.ConnectionHelper"/>
 </qualifiedTypeNameHistroy>

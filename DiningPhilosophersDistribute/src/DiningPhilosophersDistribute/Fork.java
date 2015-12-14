@@ -33,7 +33,7 @@ public class Fork implements IFork {
 		return this.seat;
 	}
 	
-	//ist das auch Ã¼ber den Getter hier gelockt?
+	//ist das auch über den Getter hier gelockt?
 	public boolean isUsed() {
 		return isUsed.get();
 	}
@@ -42,8 +42,14 @@ public class Fork implements IFork {
 	 * @param isUsed
 	 * @return isUsed previously
 	 */
-	public boolean getAndSetUsed(final boolean isUsed) {
+	public boolean getAndSetUsed(final boolean isUsed, Philosopher philosopher) {
 		boolean previous = this.isUsed.getAndSet(isUsed);
+
+		if (isUsed) {
+			System.out.println(philosopher.getPhilosopherName() + " hat die Gabel "+this.getSeat()+" bekommen, das meldet die Gabel.");
+		} else {
+			System.out.println(philosopher.getPhilosopherName() + " hat die Gabel "+this.getSeat()+" zurückgegeben, das meldet die Gabel.");
+		}
 		
 		if (!(previous && this.isUsed()) && !this.isUsed()) {
 			this.activateNextPhilosopher();

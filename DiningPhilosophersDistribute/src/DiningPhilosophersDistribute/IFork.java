@@ -12,7 +12,7 @@ public interface IFork extends Remote, Serializable {
 	
 	boolean addPhilosopher(final Philosopher philosopher) throws RemoteException;
 	
-	boolean getAndSetUsed(boolean b) throws RemoteException;
+	boolean getAndSetUsed(boolean b, Philosopher philosopher) throws RemoteException;
 	
 
 }

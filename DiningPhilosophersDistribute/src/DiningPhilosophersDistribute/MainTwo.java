@@ -36,7 +36,8 @@ public class MainTwo {
 													   new Philosopher("Matti", table, stub, false),
 													   new Philosopher("Nico", table, stub, false),
 													   new Philosopher("Marius", table, stub, false),
-													   new Philosopher("Anselm", table, stub, false)};
+													   new Philosopher("Anselm", table, stub, false)
+				};
 		
 		for (int i = 0; i < philosophers.length; i++) {
 			philosophers[i].start();

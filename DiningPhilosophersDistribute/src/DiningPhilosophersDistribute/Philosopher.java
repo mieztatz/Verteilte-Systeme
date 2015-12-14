@@ -86,7 +86,7 @@ public class Philosopher extends Thread {
 			/** *********** MEDITIEREN *********** **/
 			if (!this.isHungry()) {
 				Random r = new Random();
-				double tmp = r.nextInt(1000);
+				double tmp = r.nextInt(100);
 				if (this.isVeryHungry) {
 					try {
 						Thread.sleep(10);
@@ -128,11 +128,11 @@ public class Philosopher extends Thread {
 			}
 			//jetzt über die einzelnen Plätze des lokalen Tisches iterieren
 			try {
-				for (int i = 0; i < this.table.getNumberOfSeats() && !wasSuccessful; i ++) {
+				for (int i = 0; i < this.table.getNumberOfSeats() - 1 && !wasSuccessful; i ++) {
 					wasSuccessful = this.tryToGetForks(forkRight, forkLeft);
 					if (!wasSuccessful) {
 						System.out.println(this.getPhilosopherName() + " konnte nicht essen und versucht es am Nachbarplatz.");
-						this.unblockFork(forkRight);
+						//this.unblockFork(forkRight);
 						this.setSeat(this.table.getLeftNeighbour(this.getSeat()));
 						System.out.println(this.getPhilosopherName() + " betrachtet Sitznummer " + seat.getNumber());
 						forkRight = this.getSeat().getForkRight();
@@ -140,7 +140,7 @@ public class Philosopher extends Thread {
 					}
 				}
 				if (!wasSuccessful) {
-					this.unblockFork(forkRight);
+					//this.unblockFork(forkRight);
 					System.out.println(this.getPhilosopherName() + " konnte nicht an seinem Tisch essen und versucht es am Nachbartisch.");
 				}
 			} catch (RemoteException e) {
@@ -150,7 +150,10 @@ public class Philosopher extends Thread {
 			//jetzt am ganzen Tisch versuchen, wenn noch nicht gegessen
 			if (!wasSuccessful) {
 				try {
-					this.setSeat(connectionHelper.getAnySeatFormAllTables());
+					//ISeat tmp = connectionHelper.getAnySeatFormAllTables();
+					this.setSeat(table.getAnySeat());
+//					System.out.println(this.getPhilosopherName() + " hat einen neuen Sitzplatz " + tmp);
+//					System.out.println(this.getPhilosopherName() + " hat einen neuen Sitzplatz " + this.getSeat());
 					System.out.println(this.getPhilosopherName() + " betrachtet Sitznummer " + seat.getNumber() + " an Tisch " + seat.getTable().getNumber());
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
@@ -158,23 +161,35 @@ public class Philosopher extends Thread {
 				}
 				// dem Philosophen wurde jetzt irgendein Platz zugewiesen
 				// wenn er an diesem Platz nicht essen kann, stellt er sich in die Queue an
+				
+				// sie bekommen immer die gabeln
+				// Ja, aber das kann doch eigentlich nicht sein, weil da jemand sitzt
+				// Mir kommt es fast so vor, als würde da Leute essen, aber die Gabeln sind nicht gelockt
+				// Und warum? Hat das mit remote zu tun?
 				try {
 					forkRight = this.getSeat().getForkRight();
+					System.out.println(this.getPhilosopherName() + " hat die rechte Gabel von " + forkRight.getSeat().toString());
 					forkLeft = this.table.getLeftNeighbour(this.getSeat()).getForkRight();
+//					forkLeft = this.connectionHelper.getLeftNeighbourFormAllTables(this.getSeat()).getForkRight();
+					System.out.println(this.getPhilosopherName() + " hat die linke Gabel von " + forkLeft.getSeat().toString());
 				} catch (RemoteException e) {
 					e.printStackTrace();
 				}
 				wasSuccessful = this.tryToGetForks(forkRight, forkLeft);
+				// hier geht kein Philiosoph rein
+				//das ist der Block, der den Philosophen in den Wartezustand schickt
 				if (!wasSuccessful) {
 					System.out.println(this.getPhilosopherName() + " konnte nicht essen und muss auf den Platz warten.");
 				    // jetzt den Philosoph in die Queue einreihen
 					this.unblockFork(forkRight);
 					try {
+						System.err.println(this.getPhilosopherName() + " wartet, bis er essen kann.\n");
 						forkRight.addPhilosopher(this);
 					} catch (RemoteException e) {
 						e.printStackTrace();
 					}
-					System.out.println(this.getPhilosopherName() + " wartet, bis er essen kann.");
+					
+//					System.out.println(this.getPhilosopherName() + " wartet, bis er essen kann.");
 				}
 			}
 		}
@@ -184,42 +199,55 @@ public class Philosopher extends Thread {
 		boolean hasEaten = false;
 		boolean hasGotForkRight = false;
 		boolean hasGotForkLeft = false;
+		
 		try {
 			//nimmt sich die rechte Gabel, wenn sie frei ist
-			if (!forkRight.isUsed()) {
-				hasGotForkRight = this.reserveFork(forkRight);
-				System.out.println(this.getPhilosopherName() + "----------------------------" + hasGotForkRight);
-				if (hasGotForkRight) {
-					System.out.println(this.getPhilosopherName() + " nimmt die rechte Gabel in die Hand.");
-					//versuchen, linke Gabel zu bekommen
+			synchronized (forkRight) {
+				if (!forkRight.isUsed()) {
+					hasGotForkRight = this.reserveFork(forkRight, this);
+					System.out.println(this.getPhilosopherName() + " hat die rechte Gabel erfolgreich bekommen.");
+				}
+			}
+			//wenn die rechte Gabel bekommen, dann auch die linke versuchen
+			if (hasGotForkRight) {
+				synchronized (forkLeft) {
 					if (!forkLeft.isUsed()) {
-						hasGotForkLeft = this.reserveFork(forkLeft);
+						hasGotForkLeft = this.reserveFork(forkLeft, this);
+						System.out.println(this.getPhilosopherName() + " hat die linke Gabel erfolgreich bekommen.");
+					}
+				}
+				
+				if (hasGotForkLeft) {
+					this.eat(forkRight, forkLeft);
+					hasEaten = true;
+					//in der Methode eat() werden nach dem Essvorgang die Gabeln wieder freigegeben
+				} else {
+					//versuchen, die linke Gabel zu nehmen
+					System.out.println(this.getPhilosopherName() + " versucht, die linke Gabel zu nehmen.");
+					for (int j = 0; j < 4 && !hasEaten; j++) {
+						synchronized (forkLeft) {
+							if (!forkLeft.isUsed()) {
+								hasGotForkLeft = this.reserveFork(forkLeft, this);
+								System.out.println(this.getPhilosopherName() + " hat die linke Gabel erfolgreich bekommen.");
+							}	
+						}
 						if (hasGotForkLeft) {
-							System.out.println(this.getPhilosopherName() + " nimmt die linke Gabel in die Hand.");
 							this.eat(forkRight, forkLeft);
 							hasEaten = true;
 						}
-						//in der Methode eat() werden nach dem Essvorgang die Gabeln wieder freigegeben
-					} else {
-						//versuchen, die linke Gabel zu nehmen
-						System.out.println(this.getPhilosopherName() + " versucht, die linke Gabel zu nehmen.");
-						for (int j = 0; j < 4 && !hasEaten; j++) {
-							if (!forkLeft.isUsed()) {
-								hasGotForkLeft = this.reserveFork(forkLeft);
-								if (hasGotForkLeft) {
-									System.out.println(this.getPhilosopherName() + " nimmt die linke Gabel in die Hand.");
-									this.eat(forkRight, forkLeft);
-									hasEaten = true;
-								}
-							} else {
-								try {
-									System.out.println(this.getPhilosopherName() + " hat die linke Gabel nicht bekommen.");
-									Thread.sleep(1000);
-								} catch (InterruptedException e) {
-									e.printStackTrace();
-								}
+						 else {
+							try {
+								System.out.println(this.getPhilosopherName() + " hat die linke Gabel nicht bekommen.");
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
 							}
 						}
+					}
+					if (!hasEaten) {
+						//wenn die linke Gabel nicht da, dann muss ich die rechte wieder freigeben
+						this.unblockFork(forkRight);
+						System.out.println(this.getPhilosopherName() + " hat die linke Gabel VIERMAL nicht bekommen.");
 					}
 				}
 			} else {
@@ -248,7 +276,7 @@ public class Philosopher extends Thread {
 			e1.printStackTrace();
 		}
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(200);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -257,6 +285,7 @@ public class Philosopher extends Thread {
 		this.unblockFork(forkRight);
 		this.unblockFork(forkLeft);
 		this.setSeat(null);
+		System.out.println(this.getPhilosopherName() + " ist fertig und geht meditieren.");
 		//jetzt kann der Philosoph wieder meditieren gehen
 	}
 	
@@ -290,7 +319,7 @@ public class Philosopher extends Thread {
 		boolean result = false;
 		boolean previously;
 		try {
-			previously = forkRight.getAndSetUsed(false);
+			previously = forkRight.getAndSetUsed(false, this);
 			result = !(previously && forkRight.isUsed());
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
@@ -305,11 +334,11 @@ public class Philosopher extends Thread {
 	 * @param forkRight
 	 * @return
 	 */
-	private boolean reserveFork(IFork forkRight) {
+	private boolean reserveFork(IFork forkRight, Philosopher philosopher) {
 		boolean previously;
 		boolean result = false;
 		try {
-			previously = forkRight.getAndSetUsed(true);
+			previously = forkRight.getAndSetUsed(true, philosopher);
 			result = !(previously && forkRight.isUsed());
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block

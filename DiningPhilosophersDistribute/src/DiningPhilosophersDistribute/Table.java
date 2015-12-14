@@ -31,6 +31,7 @@ public class Table implements ITable {
 			seats = new ISeat[DEFAULT_NUMBER_OF_SEATS];
 		}
 		initSeats();
+		System.err.println("Es wurde ein neuer Tisch initalisiert!!!");
 	}
 	
 	public int getNumber() {
@@ -122,6 +123,14 @@ public class Table implements ITable {
 	
 	public ISeat getLastSeatOfTable() {
 		return seats[seats.length -1];
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Table [number=" + number + "]";
 	}
 
 }

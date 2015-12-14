@@ -18,5 +18,7 @@ public interface IConnectionHelper extends Remote, Serializable {
 	ITable getAnotherTabel(final int tableNumber) throws RemoteException;
 	
 	ISeat getAnySeatFormAllTables() throws RemoteException;
+	
+	ISeat getLeftNeighbourFormAllTables(final ISeat seat) throws RemoteException;
 
 }

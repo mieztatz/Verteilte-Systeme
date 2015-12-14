@@ -53,12 +53,18 @@ public class ConnectionHelper implements IConnectionHelper{
 			numberOfAllSeats += t.getNumberOfSeats();
 		}
 		ISeat[] seats = new ISeat[numberOfAllSeats];
-		for (int i = 0; i < numberOfAllSeats; i++) {
-			for (ITable t : listOfTables) {
-				for (int j = 0; j < t.getSeats().length; j++) {
-					seats[i] = t.getSeats()[j];
-				}
+		int copyCounter = 0;
+		for (ITable t : listOfTables) {
+			for (int i = 0 ; i < t.getSeats().length; i++) {
+				seats[copyCounter] = t.getSeats()[i];
+				System.out.println(seats[copyCounter].toString() + " und " + t.getSeats()[i].toString());
+				copyCounter++;
 			}
+		}
+			
+		System.out.println("Anzahl der Sitzplätze REMOTE: " + seats.length);
+		for (int i = 0; i < seats.length; i++) {
+			System.out.println(seats[i].toString());
 		}
 		return seats;
 	}
@@ -101,6 +107,8 @@ public class ConnectionHelper implements IConnectionHelper{
 		Random r = new Random();
 		int randomInteger = 0;
 		randomInteger = r.nextInt(seats.length);
+		System.out.println("Irgendein Sitzplatz mit Nummer " + randomInteger + " hat die Referrenz " + seats[randomInteger].toString());
+
 		return seats[randomInteger];
 	}
 	
@@ -115,9 +123,16 @@ public class ConnectionHelper implements IConnectionHelper{
 		ISeat neighbour = null;
 		boolean wasFound = false;
 		for (int i = 0; i < seats.length && !wasFound; i++) {
+			System.out.println("---------------" + seat.toString() + " und " + seats[i].toString());
 			if (seat.equals(seats[i])) {
-				neighbour = seats[i+1];
+				if (i == seats.length - 1) {
+					neighbour = seats[0];
+				}
+				else {
+					neighbour = seats[i+1];
+				}
 				wasFound = true;
+				
 			}
 		}
 		return neighbour;
