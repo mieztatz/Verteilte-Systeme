@@ -3,7 +3,6 @@
 <fullyQualifiedTypeName name="DiningPhilosophers.Fork"/>
 <fullyQualifiedTypeName name="DiningPhilosophers.Philosopher"/>
 <fullyQualifiedTypeName name="java.util.Random"/>
-<fullyQualifiedTypeName name="java.util.concurrent.atomic.AtomicBoolean"/>
 <fullyQualifiedTypeName name="helloWorld.Hello"/>
 <fullyQualifiedTypeName name="java.rmi.registry.Registry"/>
 <fullyQualifiedTypeName name="java.lang.Exception"/>
@@ -19,9 +18,10 @@
 <fullyQualifiedTypeName name="java.rmi.RemoteException"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="java.util.List"/>
-<fullyQualifiedTypeName name="DiningPhilosophersDistribute.Table"/>
 <fullyQualifiedTypeName name="DiningPhilosophersDistribute.ISeat"/>
 <fullyQualifiedTypeName name="DiningPhilosophersDistribute.ITable"/>
+<fullyQualifiedTypeName name="java.util.concurrent.atomic.AtomicBoolean"/>
 <fullyQualifiedTypeName name="DiningPhilosophersDistribute.Philosopher"/>
 <fullyQualifiedTypeName name="DiningPhilosophersDistribute.ConnectionHelper"/>
+<fullyQualifiedTypeName name="DiningPhilosophersDistribute.Table"/>
 </qualifiedTypeNameHistroy>

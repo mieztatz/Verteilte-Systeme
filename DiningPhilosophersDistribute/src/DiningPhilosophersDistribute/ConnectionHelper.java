@@ -12,19 +12,21 @@ public class ConnectionHelper implements IConnectionHelper{
 	 */
 	private static final long serialVersionUID = -1498480465650920580L;
 	
-//	private ITable[] tables = new ITable[2];
-	private final List<ITable> listOfTables = new ArrayList<>();
+    ITable[] tables = new ITable[1];
+	//private final List<ITable> listOfTables = new ArrayList<>();
 	private ISeat[] seats;
 
 	@Override
 	public ITable getTable(int number) throws RemoteException {
-		ITable table = null;
-		for(ITable t : listOfTables) {
-			if (t.getNumber() == number) {
-				table = t;
-			}
-		}
-		return table;
+//		ITable table = null;
+//		
+//		for(ITable t : listOfTables) {
+//			if (t.getNumber() == number) {
+//				table = t;
+//			}
+//		}
+//		return table;
+		return tables[number -1];
 	}
 
 	/**
@@ -33,13 +35,15 @@ public class ConnectionHelper implements IConnectionHelper{
 	 * muss dieser mit allen anderen verlinkt werden.
 	 */
 	@Override
-	public void setTable(Table table) throws RemoteException {
-		listOfTables.add(table);
+	public void setTable(ITable table) throws RemoteException {
+		tables[0] = table;
+//		listOfTables.add(table);
 		//tables[table.getNumber() - 1] = table;
 		System.out.println("Tisch mit der Nummer " + table.getNumber() + " hat sich angemeldet.");
 		
 		this.seats = linkAllSeats();
 	}
+
 	
 	/**
 	 * Diese Methode verlinkt alle Sitze miteinander
@@ -48,16 +52,18 @@ public class ConnectionHelper implements IConnectionHelper{
 	 * @throws RemoteException
 	 */
 	private ISeat[] linkAllSeats() throws RemoteException {
-		int numberOfAllSeats = 0;
-		for(ITable t : listOfTables) {
-			numberOfAllSeats += t.getNumberOfSeats();
-		}
+		int numberOfAllSeats = tables[0].getNumberOfSeats();
+//		for(ITable t : listOfTables) {
+//			numberOfAllSeats += t.getNumberOfSeats();
+//		}
 		ISeat[] seats = new ISeat[numberOfAllSeats];
 		int copyCounter = 0;
-		for (ITable t : listOfTables) {
-			for (int i = 0 ; i < t.getSeats().length; i++) {
-				seats[copyCounter] = t.getSeats()[i];
-				System.out.println(seats[copyCounter].toString() + " und " + t.getSeats()[i].toString());
+		for (int j = 0; j < tables.length; j ++){
+//		for (ITable t : listOfTables) {
+			for (int i = 0 ; i < tables[j].getSeats().length; i++) {
+//			for (int i = 0 ; i < t.getSeats().length; i++) {
+				seats[copyCounter] = tables[j].getSeats()[i];
+				System.out.println(seats[copyCounter].toString() + " und " + tables[j].getSeats()[i].toString());
 				copyCounter++;
 			}
 		}
@@ -71,27 +77,31 @@ public class ConnectionHelper implements IConnectionHelper{
 
 	@Override
 	public int getNumberOfTables() throws RemoteException {
-		return listOfTables.size();
-		//return tables.length;
+		//return listOfTables.size();
+		return tables.length;
 	}
 	
-	public boolean containsTable(final ITable table){
-		return listOfTables.contains(table);
-	}
+//	public boolean containsTable(final ITable table){
+//		return listOfTables.contains(table);
+//	}
 	
 	//ToDo: kann man das vielleicht effizienter lösen?
 	public ITable getAnotherTabel(final int tableNumber) {
 		ITable table = null;
 		Random r = new Random();
 		int randomInteger = 0;
-		randomInteger = r.nextInt(listOfTables.size());
+//		randomInteger = r.nextInt(listOfTables.size());
+		randomInteger = r.nextInt(tables.length);
 		
-		ITable tabel = listOfTables.get(randomInteger);
+//		ITable tabel = listOfTables.get(randomInteger);
+		ITable tabel = tables[randomInteger-1];
 		
 		try {
-			while (tabel.getNumber() == tableNumber) {
-				randomInteger = r.nextInt(listOfTables.size());
-				tabel = listOfTables.get(randomInteger);
+			while (tabel.getNumber() == tableNumber && tables.length !=1) {
+//				randomInteger = r.nextInt(listOfTables.size());
+//				tabel = listOfTables.get(randomInteger);
+				randomInteger = r.nextInt(tables.length);
+				tabel = tables[randomInteger-1];
 			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block

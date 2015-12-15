@@ -5,22 +5,15 @@ import java.util.Random;
 
 public class Table implements ITable {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6908684959619272507L;
-
-
+	
+	private static final int DEFAULT_NUMBER_OF_SEATS = 10;
+	
+	private final ISeat[] seats;
 	private final int numberOfSeats;
 	private final int number;
 	private final IConnectionHelper connectionhelper;
-	
 
-	
-
-	private static final int DEFAULT_NUMBER_OF_SEATS = 10;
-	private final ISeat[] seats;
-	
 	public Table(final int numberOfSeats, final int number, final IConnectionHelper connectionHelper) {
 		this.numberOfSeats = numberOfSeats;
 		this.number = number;
@@ -31,7 +24,7 @@ public class Table implements ITable {
 			seats = new ISeat[DEFAULT_NUMBER_OF_SEATS];
 		}
 		initSeats();
-		System.err.println("Es wurde ein neuer Tisch initalisiert!!!");
+		System.err.println("Es wurde ein neuer Tisch initalisiert.");
 	}
 	
 	public int getNumber() {
@@ -44,6 +37,10 @@ public class Table implements ITable {
 		}
 	}
 	
+	public ISeat getSeat(int number) {
+		return this.getSeats()[number];
+	}
+	
 	public int getNumberOfSeats() {
 		return numberOfSeats;
 	}
@@ -52,64 +49,85 @@ public class Table implements ITable {
 		return this.seats;
 	}
 	
-	/** 
-	 * Gibt den linken Nachbarn des übergebenen Platzes zurück.
-	 * Falls der übergebene Platz nicht am Tisch ist, wird NULL zurückgegeben.
-	 * Tische sind miteinander verlinkt. Die linke Gable ist immer die Gabel
-	 * des linken Tischnachbarn. Das hiesst, der Platz im Array an Stelle 0
-	 * verlinkt auf das letzte Element des anderen Tisches, falls es einen gibt.
-	 * @param other - der eigene Platz
-	 * @return seat - der links benachbarte Platz
-	 */
-	public ISeat getLeftNeighbourFormWholeTable(final ISeat other) throws RemoteException {
-		ISeat seat = null;
-		if(other.getNumber() < seats.length && other.getNumber() >= 0) {
-			if(other.getNumber() == 0) { // hier muss zum anderen Tisch verlinkt werden
-				//prüfen, ob es mehr als einen Tisch gibt und dieser Tisch enthalten ist
-				if (connectionhelper.getNumberOfTables() > 1 && connectionhelper.containsTable(this)) {
-					if (this.getNumber() == 0) {
-						seat = connectionhelper.getTable(connectionhelper.getNumberOfTables() - 1).getLastSeatOfTable();
-					} else {
-						seat = connectionhelper.getTable(this.getNumber() -1).getLastSeatOfTable();
-					}
-				}
-			} else {
-				seat = seats[other.getNumber()- 1];
-			}
-		}
-		return seat;
-	}
+//	/** 
+//	 * Gibt den linken Nachbarn des übergebenen Platzes zurück.
+//	 * Falls der übergebene Platz nicht am Tisch ist, wird NULL zurückgegeben.
+//	 * Tische sind miteinander verlinkt. Die linke Gable ist immer die Gabel
+//	 * des linken Tischnachbarn. Das hiesst, der Platz im Array an Stelle 0
+//	 * verlinkt auf das letzte Element des anderen Tisches, falls es einen gibt.
+//	 * @param other - der eigene Platz
+//	 * @return seat - der links benachbarte Platz
+//	 */
+//	public ISeat getLeftNeighbourFormWholeTable(final ISeat other) throws RemoteException {
+//		ISeat seat = null;
+//		if(other.getNumber() < seats.length && other.getNumber() >= 0) {
+//			if(other.getNumber() == 0) { // hier muss zum anderen Tisch verlinkt werden
+//				//prüfen, ob es mehr als einen Tisch gibt und dieser Tisch enthalten ist
+//				if (connectionhelper.getNumberOfTables() > 1 && connectionhelper.containsTable(this)) {
+//					if (this.getNumber() == 0) {
+//						seat = connectionhelper.getTable(connectionhelper.getNumberOfTables() - 1).getLastSeatOfTable();
+//					} else {
+//						seat = connectionhelper.getTable(this.getNumber() -1).getLastSeatOfTable();
+//					}
+//				}
+//			} else {
+//				seat = seats[other.getNumber()- 1];
+//			}
+//		}
+//		return seat;
+//	}
 	
 	/**
 	 * Gibt den linken Nachbarn des Tisches zurück.
-	 * Nur lokal.
 	 */
-	public ISeat getLeftNeighbour(final ISeat other) throws RemoteException {
-		return seats[(other.getNumber() + 1) % seats.length];
+	public ISeat getLeftNeighbour(final int seat) throws RemoteException {
+		return seats[(seat + 1) % seats.length];
 	}
 	
-	/**
-	 * Gibt den rechten Nachbarn des Ã¼bergebenen Platzes zurÃ¼ck.
-	 * Falls der Ã¼bergeben Platz nicht am Tisch ist, wird NUll zurÃ¼ckgegeben.
-	 * @param other - der eigene Platz
-	 * @return seat - der rechts benachbarte Platz
-	 */
-	public ISeat getRightNeighbour(final ISeat other) {
-		ISeat seat = null;
+	public IFork getForkOfSeat(final int number) {
+		IFork fork = null;
 		try {
-			if(other.getNumber() < seats.length && other.getNumber() >= 0) {
-				if(other.getNumber() == seats.length-1) {
-					seat = seats[0];
-				} else {
-					seat = seats[other.getNumber() + 1];
-				}
-			}
+			return this.getSeats()[number].getForkRight();
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return seat;
+		return fork;
 	}
+	
+	public IFork getLeftNeighbourForkOfSeat(final int seat) {
+		IFork fork = null;
+		try {
+			return this.getLeftNeighbour(seat).getForkRight();
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return fork;
+	}
+	
+//	/**
+//	 * Gibt den rechten Nachbarn des übergebenen Platzes zurück.
+//	 * Falls der übergeben Platz nicht am Tisch ist, wird NUll zurückgegeben.
+//	 * @param other - der eigene Platz
+//	 * @return seat - der rechts benachbarte Platz
+//	 */
+//	public ISeat getRightNeighbour(final ISeat other) {
+//		ISeat seat = null;
+//		try {
+//			if(other.getNumber() < seats.length && other.getNumber() >= 0) {
+//				if(other.getNumber() == seats.length-1) {
+//					seat = seats[0];
+//				} else {
+//					seat = seats[other.getNumber() + 1];
+//				}
+//			}
+//		} catch (RemoteException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return seat;
+//	}
 	
 	public ISeat getFirstSeat() {
 		return seats[0];
@@ -125,12 +143,16 @@ public class Table implements ITable {
 		return seats[seats.length -1];
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "Table [number=" + number + "]";
+	public boolean isForkInUse(final Fork fork) {
+		boolean isUsed = false;
+		try {
+			return this.getSeats()[fork.getSeat().getNumber()].getForkRight().isUsed();
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return isUsed;
 	}
+	
 
 }

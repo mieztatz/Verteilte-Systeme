@@ -9,11 +9,11 @@ public interface IConnectionHelper extends Remote, Serializable {
 	
 	ITable getTable(final int number) throws RemoteException;
 	
-	void setTable(final Table table) throws RemoteException;
+	void setTable(final ITable table) throws RemoteException;
 	
 	int getNumberOfTables() throws RemoteException;
 	
-	boolean containsTable(final ITable table) throws RemoteException;
+	//boolean containsTable(final ITable table) throws RemoteException;
 	
 	ITable getAnotherTabel(final int tableNumber) throws RemoteException;
 	

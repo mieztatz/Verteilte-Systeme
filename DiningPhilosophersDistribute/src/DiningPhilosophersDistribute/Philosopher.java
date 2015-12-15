@@ -15,7 +15,9 @@ public class Philosopher extends Thread {
 	
 	/** Wenn der Philosoph isst, sitzt er temporär an einem Platz.
 	 *  Dieser Platz hat eine rechte Gabel.*/
-	private ISeat seat;
+//	private ISeat seat;
+	
+	int[] seat = null;
 	
 	/** Der Name eines Philosophen **/
 	private final String name;
@@ -44,6 +46,11 @@ public class Philosopher extends Thread {
 		this.isHungry = true;
 	}
 	
+	/** Getter für den Stub des Tisches */
+	public ITable getTable() {
+		return this.table;
+	}
+	
 	/** Getter und Setter der Klassenvariablen **/
 	public boolean isHungry() {
 		return isHungry;
@@ -57,12 +64,14 @@ public class Philosopher extends Thread {
 		return this.name;
 	}
 	
-	public ISeat getSeat() {
+	public int[] getSeat() {
 		return this.seat;
 	}
 	
-	public void setSeat(final ISeat seat) {
-		this.seat = seat;
+	public void setSeat(int... seat) {
+		for (int i = 0; i < seat.length; i++) {
+			this.seat[i] = seat[i];
+		}
 	}
 
 	public int getProcess() {
@@ -90,7 +99,7 @@ public class Philosopher extends Thread {
 				if (this.isVeryHungry) {
 					try {
 						Thread.sleep(10);
-						System.out.println(this.getPhilosopherName() + "ist sehr hungrig und meditiert nur " + 10/1000 + " Sekunden.");
+						System.out.println(this.getPhilosopherName() + "ist sehr hungrig und meditiert nur " + 10/100 + " Sekunden.");
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -106,30 +115,31 @@ public class Philosopher extends Thread {
 			}
 			/** *********** Essen *********** **/
 			boolean wasSuccessful = false;
-			//erste Sitzplatz zuweisen lassen
+			//ersten Sitzplatz zuweisen lassen
 			if (this.getSeat() == null) {
 				try {
-					this.setSeat(this.table.getAnySeat());
-					System.out.println(this.getPhilosopherName() + " betrachtet Sitznummer " + seat.getNumber());
+					this.setSeat(this.getTable().getAnySeat().getNumber(), this.getTable().getNumber());
+					System.out.println(this.getPhilosopherName() + " betrachtet Sitznummer " + this.getSeat()[0] + " an Tisch " + this.getSeat()[2]);
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-			//Gabeln lokal merken
-			IFork forkRight = null;
-			IFork forkLeft = null;
-			try {
-				forkRight = this.getSeat().getForkRight();
-				forkLeft = this.table.getLeftNeighbour(this.getSeat()).getForkRight();
-			} catch (RemoteException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			// Das ist ganz schlecht, ich merke mir nur noch die Zahlen, wo ich bin
+			// das Objekt hole ich mir immer remote
+//			IFork forkRight = null;
+//			IFork forkLeft = null;
+//			try {
+//				forkRight = this.getTable().getForkOfSeat(this.getSeat()[0]);
+//				forkLeft = this.getTable().getLeftNeighbourForkOfSeat(this.getSeat()[0]);
+//			} catch (RemoteException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
 			//jetzt über die einzelnen Plätze des lokalen Tisches iterieren
 			try {
-				for (int i = 0; i < this.table.getNumberOfSeats() - 1 && !wasSuccessful; i ++) {
-					wasSuccessful = this.tryToGetForks(forkRight, forkLeft);
+				for (int i = 0; i < this.getTable().getNumberOfSeats() - 1 && !wasSuccessful; i ++) {
+					wasSuccessful = this.tryToGetForks();
 					if (!wasSuccessful) {
 						System.out.println(this.getPhilosopherName() + " konnte nicht essen und versucht es am Nachbarplatz.");
 						//this.unblockFork(forkRight);
@@ -195,44 +205,44 @@ public class Philosopher extends Thread {
 		}
 	}
 	
-	private boolean tryToGetForks(IFork forkRight, IFork forkLeft) {
+	private boolean tryToGetForks() {
 		boolean hasEaten = false;
 		boolean hasGotForkRight = false;
 		boolean hasGotForkLeft = false;
 		
 		try {
 			//nimmt sich die rechte Gabel, wenn sie frei ist
-			synchronized (forkRight) {
-				if (!forkRight.isUsed()) {
-					hasGotForkRight = this.reserveFork(forkRight, this);
+			synchronized (this.getTable().getForkOfSeat(this.getSeat()[0])) {
+				if (!this.getTable().getForkOfSeat(this.getSeat()[0]).isUsed()) {
+					hasGotForkRight = this.reserveFork(this.getTable().getForkOfSeat(this.getSeat()[0]), this);
 					System.out.println(this.getPhilosopherName() + " hat die rechte Gabel erfolgreich bekommen.");
 				}
 			}
 			//wenn die rechte Gabel bekommen, dann auch die linke versuchen
 			if (hasGotForkRight) {
-				synchronized (forkLeft) {
-					if (!forkLeft.isUsed()) {
-						hasGotForkLeft = this.reserveFork(forkLeft, this);
+				synchronized (this.getTable().getLeftNeighbourForkOfSeat(this.getSeat()[0])) {
+					if (!this.getTable().getLeftNeighbourForkOfSeat(this.getSeat()[0]).isUsed()) {
+						hasGotForkLeft = this.reserveFork(this.getTable().getLeftNeighbourForkOfSeat(this.getSeat()[0]), this);
 						System.out.println(this.getPhilosopherName() + " hat die linke Gabel erfolgreich bekommen.");
 					}
 				}
 				
 				if (hasGotForkLeft) {
-					this.eat(forkRight, forkLeft);
+					this.eat(this.getTable().getForkOfSeat(this.getSeat()[0]), this.getTable().getLeftNeighbourForkOfSeat(this.getSeat()[0]));
 					hasEaten = true;
 					//in der Methode eat() werden nach dem Essvorgang die Gabeln wieder freigegeben
 				} else {
 					//versuchen, die linke Gabel zu nehmen
 					System.out.println(this.getPhilosopherName() + " versucht, die linke Gabel zu nehmen.");
 					for (int j = 0; j < 4 && !hasEaten; j++) {
-						synchronized (forkLeft) {
-							if (!forkLeft.isUsed()) {
-								hasGotForkLeft = this.reserveFork(forkLeft, this);
+						synchronized (this.getTable().getLeftNeighbourForkOfSeat(this.getSeat()[0])) {
+							if (!this.getTable().getLeftNeighbourForkOfSeat(this.getSeat()[0]).isUsed()) {
+								hasGotForkLeft = this.reserveFork(this.getTable().getLeftNeighbourForkOfSeat(this.getSeat()[0]), this);
 								System.out.println(this.getPhilosopherName() + " hat die linke Gabel erfolgreich bekommen.");
 							}	
 						}
 						if (hasGotForkLeft) {
-							this.eat(forkRight, forkLeft);
+							this.eat(this.getTable().getForkOfSeat(this.getSeat()[0]), this.getTable().getLeftNeighbourForkOfSeat(this.getSeat()[0]));
 							hasEaten = true;
 						}
 						 else {
@@ -246,7 +256,7 @@ public class Philosopher extends Thread {
 					}
 					if (!hasEaten) {
 						//wenn die linke Gabel nicht da, dann muss ich die rechte wieder freigeben
-						this.unblockFork(forkRight);
+						this.unblockFork(this.getTable().getForkOfSeat(this.getSeat()[0]));
 						System.out.println(this.getPhilosopherName() + " hat die linke Gabel VIERMAL nicht bekommen.");
 					}
 				}
