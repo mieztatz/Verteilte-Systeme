@@ -7,7 +7,7 @@ public class Seat implements ISeat {
 	private static final long serialVersionUID = -8600807833617312109L;
 
 	private final int number;
-	private final IFork forkRight;
+	private final Fork forkRight;
 	private final ITable table;
 	
 //	/* (non-Javadoc)
@@ -65,7 +65,7 @@ public class Seat implements ISeat {
 		return this.table;
 	}
 	
-	public IFork getForkRight() {
+	public Fork getForkRight() {
 		return this.forkRight;
 	}
 

@@ -150,6 +150,7 @@ public class Philosopher extends Thread {
 			}
 			/** *********** Essen *********** **/
 			boolean wasSuccessful = false;
+			boolean hasMeditate = false;
 			//ersten Sitzplatz zuweisen lassen
 			if (this.getSeatNumber() == -1 && this.getTableNumber() == -1) {
 				try {
@@ -269,186 +270,186 @@ public class Philosopher extends Thread {
 		}
 	}
 	
-	private boolean tryToGetForks() {
-		boolean hasEaten = false;
-		boolean hasGotForkRight = false;
-		boolean hasGotForkLeft = false;
-		
-		try {
-			//nimmt sich die rechte Gabel, wenn sie frei ist
-			synchronized (this.getTable().getForkOfSeat(this.getSeatNumber())) {
-				System.out.println(this.getTable().getSeat(this.getSeatNumber()));
-				System.out.println(this.getTable().getForkOfSeat(this.getSeatNumber()));
-				if (!this.getTable().getForkOfSeat(this.getSeatNumber()).isUsed()) {
-					hasGotForkRight = this.reserveForkRight();
-					System.out.println(this.getPhilosopherName() + " hat die rechte Gabel erfolgreich bekommen.");
-				}
-			}
-			//wenn die rechte Gabel bekommen, dann auch die linke versuchen
-			if (hasGotForkRight) {
-				synchronized (this.getTable().getLeftNeighbourForkOfSeat(this.getSeatNumber())) {
-					if (!this.getTable().getLeftNeighbourForkOfSeat(this.getSeatNumber()).isUsed()) {
-						hasGotForkLeft = this.reserveForkLeft();
-						System.out.println(this.getPhilosopherName() + " hat die linke Gabel erfolgreich bekommen.");
-					}
-				}
-				
-				if (hasGotForkLeft) {
-					this.eat();
-					hasEaten = true;
-					//in der Methode eat() werden nach dem Essvorgang die Gabeln wieder freigegeben
-				} else {
-					//versuchen, die linke Gabel zu nehmen
-					System.out.println(this.getPhilosopherName() + " versucht, die linke Gabel zu nehmen.");
-					for (int j = 0; j < 4 && !hasEaten; j++) {
-						synchronized (this.getTable().getLeftNeighbourForkOfSeat(this.getSeatNumber())) {
-							if (!this.getTable().getLeftNeighbourForkOfSeat(this.getSeatNumber()).isUsed()) {
-								hasGotForkLeft = this.reserveForkLeft();
-								System.out.println(this.getPhilosopherName() + " hat die linke Gabel erfolgreich bekommen.");
-							}	
-						}
-						if (hasGotForkLeft) {
-							this.eat();
-							hasEaten = true;
-						}
-						 else {
-							try {
-								System.out.println(this.getPhilosopherName() + " hat die linke Gabel nicht bekommen.");
-								Thread.sleep(1000);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
-					}
-					if (!hasEaten) {
-						System.out.println(this.getPhilosopherName() + " hat die linke Gabel VIERMAL nicht bekommen.");
-						//wenn die linke Gabel nicht da, dann muss ich die rechte wieder freigeben
-						this.unblockForkRight();
-					}
-				}
-			} else {
-				System.out.println(this.getPhilosopherName() + " hat die rechte Gabel nicht bekommen.");
-			}
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return hasEaten;
-	}
+//	private boolean tryToGetForks() {
+//		boolean hasEaten = false;
+//		boolean hasGotForkRight = false;
+//		boolean hasGotForkLeft = false;
+//		
+//		try {
+//			//nimmt sich die rechte Gabel, wenn sie frei ist
+//			synchronized (this.getTable().getForkOfSeat(this.getSeatNumber())) {
+//				System.out.println(this.getTable().getSeat(this.getSeatNumber()));
+//				System.out.println(this.getTable().getForkOfSeat(this.getSeatNumber()));
+//				if (!this.getTable().getForkOfSeat(this.getSeatNumber()).isUsed()) {
+//					hasGotForkRight = this.reserveForkRight();
+//					System.out.println(this.getPhilosopherName() + " hat die rechte Gabel erfolgreich bekommen.");
+//				}
+//			}
+//			//wenn die rechte Gabel bekommen, dann auch die linke versuchen
+//			if (hasGotForkRight) {
+//				synchronized (this.getTable().getLeftNeighbourForkOfSeat(this.getSeatNumber())) {
+//					if (!this.getTable().getLeftNeighbourForkOfSeat(this.getSeatNumber()).isUsed()) {
+//						hasGotForkLeft = this.reserveForkLeft();
+//						System.out.println(this.getPhilosopherName() + " hat die linke Gabel erfolgreich bekommen.");
+//					}
+//				}
+//				
+//				if (hasGotForkLeft) {
+//					this.eat();
+//					hasEaten = true;
+//					//in der Methode eat() werden nach dem Essvorgang die Gabeln wieder freigegeben
+//				} else {
+//					//versuchen, die linke Gabel zu nehmen
+//					System.out.println(this.getPhilosopherName() + " versucht, die linke Gabel zu nehmen.");
+//					for (int j = 0; j < 4 && !hasEaten; j++) {
+//						synchronized (this.getTable().getLeftNeighbourForkOfSeat(this.getSeatNumber())) {
+//							if (!this.getTable().getLeftNeighbourForkOfSeat(this.getSeatNumber()).isUsed()) {
+//								hasGotForkLeft = this.reserveForkLeft();
+//								System.out.println(this.getPhilosopherName() + " hat die linke Gabel erfolgreich bekommen.");
+//							}	
+//						}
+//						if (hasGotForkLeft) {
+//							this.eat();
+//							hasEaten = true;
+//						}
+//						 else {
+//							try {
+//								System.out.println(this.getPhilosopherName() + " hat die linke Gabel nicht bekommen.");
+//								Thread.sleep(1000);
+//							} catch (InterruptedException e) {
+//								e.printStackTrace();
+//							}
+//						}
+//					}
+//					if (!hasEaten) {
+//						System.out.println(this.getPhilosopherName() + " hat die linke Gabel VIERMAL nicht bekommen.");
+//						//wenn die linke Gabel nicht da, dann muss ich die rechte wieder freigeben
+//						this.unblockForkRight();
+//					}
+//				}
+//			} else {
+//				System.out.println(this.getPhilosopherName() + " hat die rechte Gabel nicht bekommen.");
+//			}
+//		} catch (RemoteException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return hasEaten;
+//	}
 	
-	/** In dieser Methode isst der Philosoph.
-	 * Achtung: synchronized-Blöcke in reserveFork()
-	 * und in unblockFork.
-	 * @param forkRight
-	 * @param forkLeft
-	 */
-	private void eat() {
-		//dann kann der Philosoph essen
-		//this.reserveFork(forkLeft);
-		try {
-			whichTabel(this.getTable().getForkOfSeat(this.getSeatNumber()), this.getTable().getLeftNeighbourForkOfSeat(this.getSeatNumber()));
-		} catch (RemoteException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
-			Thread.sleep(200);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		this.setProcess(this.getProcess() + 1);
-		this.setHungry(false);
-		this.unblockForkRight();
-		this.unblockForkLeft();
-		//auf unzulässigen Wert setzen
-		this.setSeatNumber(-1);
-		this.setTabelNumber(-1);
-		System.out.println(this.getPhilosopherName() + " ist fertig und geht meditieren.");
-		//jetzt kann der Philosoph wieder meditieren gehen
-	}
+//	/** In dieser Methode isst der Philosoph.
+//	 * Achtung: synchronized-Blöcke in reserveFork()
+//	 * und in unblockFork.
+//	 * @param forkRight
+//	 * @param forkLeft
+//	 */
+//	private void eat() {
+//		//dann kann der Philosoph essen
+//		//this.reserveFork(forkLeft);
+//		try {
+//			whichTabel(this.getTable().getForkOfSeat(this.getSeatNumber()), this.getTable().getLeftNeighbourForkOfSeat(this.getSeatNumber()));
+//		} catch (RemoteException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+//		try {
+//			Thread.sleep(200);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		this.setProcess(this.getProcess() + 1);
+//		this.setHungry(false);
+//		this.unblockForkRight();
+//		this.unblockForkLeft();
+//		//auf unzulässigen Wert setzen
+//		this.setSeatNumber(-1);
+//		this.setTabelNumber(-1);
+//		System.out.println(this.getPhilosopherName() + " ist fertig und geht meditieren.");
+//		//jetzt kann der Philosoph wieder meditieren gehen
+//	}
 	
-	private void whichTabel(final IFork forkRight, final IFork forkLeft) throws RemoteException {
-		int tableRight = forkRight.getSeat().getTable().getNumber();
-		int tableLeft = forkLeft.getSeat().getTable().getNumber();
-		String output = "";
-		
-		
-		if(tableRight == this.table.getNumber() && tableLeft == this.table.getNumber()) {
-			output += "LOKAL: ";
-		} else {
-			output += "REMOTE: ";
-		}
-		
-		if (tableRight == tableLeft) {
-			output += this.getPhilosopherName() + " isst an Sitzplatz " + forkRight.getSeat().getNumber() + " an Tisch " + tableRight;
-		}else {
-			output += this.getPhilosopherName() + " isst an Tisch " + tableRight + " mit der rechten Gabel.";
-		}
-		System.out.println(output);
-	}
+//	private void whichTabel(final IFork forkRight, final IFork forkLeft) throws RemoteException {
+//		int tableRight = forkRight.getSeat().getTable().getNumber();
+//		int tableLeft = forkLeft.getSeat().getTable().getNumber();
+//		String output = "";
+//		
+//		
+//		if(tableRight == this.table.getNumber() && tableLeft == this.table.getNumber()) {
+//			output += "LOKAL: ";
+//		} else {
+//			output += "REMOTE: ";
+//		}
+//		
+//		if (tableRight == tableLeft) {
+//			output += this.getPhilosopherName() + " isst an Sitzplatz " + forkRight.getSeat().getNumber() + " an Tisch " + tableRight;
+//		}else {
+//			output += this.getPhilosopherName() + " isst an Tisch " + tableRight + " mit der rechten Gabel.";
+//		}
+//		System.out.println(output);
+//	}
 
-	/**
-	 * Setzt den übergeben Wert.
-	 * Liefert true, wenn der Wert getoggelt wurde, ansonsten false.
-	 * @param forkRight
-	 * @return
-	 */
-	private boolean unblockForkRight() {
-		boolean result = false;
-		boolean previously;
-		try {
-			previously = this.getTable().getForkOfSeat(this.getSeatNumber()).getAndSetUsed(false, this);
-			result = !(previously && this.getTable().getForkOfSeat(this.getSeatNumber()).isUsed());
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return result;
-	}
+//	/**
+//	 * Setzt den übergeben Wert.
+//	 * Liefert true, wenn der Wert getoggelt wurde, ansonsten false.
+//	 * @param forkRight
+//	 * @return
+//	 */
+//	private boolean unblockForkRight() {
+//		boolean result = false;
+//		boolean previously;
+//		try {
+//			previously = this.getTable().getForkOfSeat(this.getSeatNumber()).getAndSetUsed(false, this);
+//			result = !(previously && this.getTable().getForkOfSeat(this.getSeatNumber()).isUsed());
+//		} catch (RemoteException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return result;
+//	}
 	
-	private boolean unblockForkLeft() {
-		boolean result = false;
-		boolean previously;
-		try {
-			previously = this.getTable().getLeftNeighbourForkOfSeat(this.getSeatNumber()).getAndSetUsed(false, this);
-			result = !(previously && this.getTable().getLeftNeighbourForkOfSeat(this.getSeatNumber()).isUsed());
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return result;
-	}
+//	private boolean unblockForkLeft() {
+//		boolean result = false;
+//		boolean previously;
+//		try {
+//			previously = this.getTable().getLeftNeighbourForkOfSeat(this.getSeatNumber()).getAndSetUsed(false, this);
+//			result = !(previously && this.getTable().getLeftNeighbourForkOfSeat(this.getSeatNumber()).isUsed());
+//		} catch (RemoteException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return result;
+//	}
 
-	/**
-	 * Setzt den übergeben Wert.
-	 * Liefert true, wenn der Wert getoggelt wurde, ansonsten false.
-	 * @param forkRight
-	 * @return
-	 */
-	private boolean reserveForkRight() {
-		boolean previously;
-		boolean result = false;
-		try {
-			previously = this.getTable().getForkOfSeat(this.getSeatNumber()).getAndSetUsed(true, this);
-			result = !(previously && this.getTable().getForkOfSeat(this.getSeatNumber()).isUsed());
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return result;
-	}
+//	/**
+//	 * Setzt den übergeben Wert.
+//	 * Liefert true, wenn der Wert getoggelt wurde, ansonsten false.
+//	 * @param forkRight
+//	 * @return
+//	 */
+//	private boolean reserveForkRight() {
+//		boolean previously;
+//		boolean result = false;
+//		try {
+//			previously = this.getTable().getForkOfSeat(this.getSeatNumber()).getAndSetUsed(true, this);
+//			result = !(previously && this.getTable().getForkOfSeat(this.getSeatNumber()).isUsed());
+//		} catch (RemoteException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return result;
+//	}
 	
-	private boolean reserveForkLeft() {
-		boolean previously;
-		boolean result = false;
-		try {
-			previously = this.getTable().getLeftNeighbourForkOfSeat(this.getSeatNumber()).getAndSetUsed(true, this);
-			result = !(previously && this.getTable().getLeftNeighbourForkOfSeat(this.getSeatNumber()).isUsed());
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return result;
-	}
+//	private boolean reserveForkLeft() {
+//		boolean previously;
+//		boolean result = false;
+//		try {
+//			previously = this.getTable().getLeftNeighbourForkOfSeat(this.getSeatNumber()).getAndSetUsed(true, this);
+//			result = !(previously && this.getTable().getLeftNeighbourForkOfSeat(this.getSeatNumber()).isUsed());
+//		} catch (RemoteException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return result;
+//	}
 
 }

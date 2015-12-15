@@ -1,5 +1,6 @@
 package DiningPhilosophersDistribute;
 
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -30,6 +31,11 @@ public class MainOne {
 			ITable table = new Table(3, 1, tableOne, stubConnectionHelper);
 			ITable stubTable = (ITable) UnicastRemoteObject.exportObject(table, 0);
 			registry.bind(tableOne, stubTable);
+			
+			//Sitze in Registry einbinden
+			ISeat seat1 = new Seat(0, stubTable);
+			ISeat seat2 = new Seat(1, stubTable);
+			ISeat seat3 = new Seat(2, stubTable);
 	
 			System.err.println("Server ready: Bereit zur Anmeldung.");
 			

@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Fork implements IFork {
 	
-	private final Seat seat;
+	private final ISeat seat;
 	
 	/**
 	 * 
@@ -26,7 +26,7 @@ public class Fork implements IFork {
 	
 	private List<Philosopher> queue = new ArrayList<>();
 	
-	public Fork(final Seat seat) {
+	public Fork(final ISeat seat) {
 		this.seat = seat;
 	}
 	
@@ -34,7 +34,6 @@ public class Fork implements IFork {
 		return this.seat;
 	}
 	
-	//ist das auch über den Getter hier gelockt?
 	public boolean isUsed() {
 		return isUsed.get();
 	}
