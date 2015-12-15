@@ -6,19 +6,8 @@ import java.rmi.RemoteException;
 
 public interface IConnectionHelper extends Remote, Serializable {
 	
+	boolean addTable(final String table) throws RemoteException;
 	
-	ITable getTable(final int number) throws RemoteException;
-	
-	void setTable(final ITable table) throws RemoteException;
-	
-	int getNumberOfTables() throws RemoteException;
-	
-	//boolean containsTable(final ITable table) throws RemoteException;
-	
-	ITable getAnotherTabel(final int tableNumber) throws RemoteException;
-	
-	ISeat getAnySeatFormAllTables() throws RemoteException;
-	
-	ISeat getLeftNeighbourFormAllTables(final ISeat seat) throws RemoteException;
+	String getAnotherTable(final String table) throws RemoteException;
 
 }

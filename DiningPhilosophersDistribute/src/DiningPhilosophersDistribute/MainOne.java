@@ -18,38 +18,39 @@ public class MainOne {
 	public static void main(String args[]) {
 		//jeder Tisch hat drei Sitzplätze mit einer rechten Gabel
 		try {
-			ConnectionHelper connectionHelper = new ConnectionHelper();
-			ITable table = new Table(3, 1, connectionHelper);
-			
-			IConnectionHelper stub = (IConnectionHelper) UnicastRemoteObject.exportObject(connectionHelper, 0);
-
 			Registry registry = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
 			
-			registry.bind("ConnectionHelper", stub);
+			//ConnectionHelper in die Registry einbinden
+			ConnectionHelper connectionHelper = new ConnectionHelper();
+			IConnectionHelper stubConnectionHelper = (IConnectionHelper) UnicastRemoteObject.exportObject(connectionHelper, 0);
+			registry.bind("ConnectionHelper", stubConnectionHelper);
 			
-			String tableName= "Table-1";
-			
-			ITable tableStub = (ITable) UnicastRemoteObject.exportObject(table, 0);
-			registry.bind(tableName, tableStub);
-			
+			//Tisch-1 in die Registry einbinden
+			String tableOne = "Table-1";
+			ITable table = new Table(3, 1, tableOne, stubConnectionHelper);
+			ITable stubTable = (ITable) UnicastRemoteObject.exportObject(table, 0);
+			registry.bind(tableOne, stubTable);
+	
 			System.err.println("Server ready: Bereit zur Anmeldung.");
 			
-			//stub.setTable(table);
+			//den Tisch im ConnectionHelper anmelden
+			stubConnectionHelper.addTable(tableOne);
 			
-			Philosopher[] philosophers = new Philosopher[]{ new Philosopher("Lukas", tableStub, stub, false),
-															new Philosopher("Robert", tableStub, stub, false),
-															new Philosopher("Bauer0", tableStub, stub, false),
-															new Philosopher("Linda", tableStub, stub, false),
-															new Philosopher("Tom", tableStub, stub, false),
-															new Philosopher("Ersin", tableStub, stub, false),
-															new Philosopher("Alu", tableStub, stub, false),
-															new Philosopher("Markus", tableStub, stub, false),
-															new Philosopher("Moritz", tableStub, stub, false),
-															new Philosopher("Chris Pohl", tableStub, stub, false),
-															new Philosopher("Friedrich", tableStub, stub, false),
-															new Philosopher("Ludwig", tableStub, stub, false),
-															new Philosopher("Hans", tableStub, stub, false),
-															new Philosopher("Martin", tableStub, stub, false)
+			
+			Philosopher[] philosophers = new Philosopher[]{ new Philosopher("Lukas", stubTable, stubConnectionHelper, false),
+															new Philosopher("Robert", stubTable, stubConnectionHelper, false),
+//															new Philosopher("Bauer0", stubTable, stubConnectionHelper, false),
+//															new Philosopher("Linda", stubTable, stubConnectionHelper, false),
+//															new Philosopher("Tom", stubTable, stubConnectionHelper, false),
+//															new Philosopher("Ersin", stubTable, stubConnectionHelper, false),
+//															new Philosopher("Alu", stubTable, stubConnectionHelper, false),
+//															new Philosopher("Markus", stubTable, stubConnectionHelper, false),
+//															new Philosopher("Moritz", stubTable, stubConnectionHelper, false),
+//															new Philosopher("Chris Pohl", stubTable, stubConnectionHelper, false),
+//															new Philosopher("Friedrich", stubTable, stubConnectionHelper, false),
+//															new Philosopher("Ludwig", stubTable, stubConnectionHelper, false),
+//															new Philosopher("Hans", stubTable, stubConnectionHelper, false),
+//															new Philosopher("Martin", stubTable, stubConnectionHelper, false)
 					};
 			
 			for (int i = 0; i < philosophers.length; i++) {

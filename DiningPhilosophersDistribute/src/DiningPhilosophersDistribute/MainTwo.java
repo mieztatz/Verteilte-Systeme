@@ -3,6 +3,7 @@ package DiningPhilosophersDistribute;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 
 import javax.swing.text.TabExpander;
 
@@ -20,23 +21,26 @@ public class MainTwo {
 		try {
 		Registry registry = LocateRegistry.getRegistry();
 		
-		IConnectionHelper stub = (IConnectionHelper) registry.lookup("ConnectionHelper");
-		final Table table = new Table(3, 2, stub);
+		IConnectionHelper stubConnectionHelper = (IConnectionHelper) registry.lookup("ConnectionHelper");
 		
-		//System.out.println("response: " + response);
+		String tableTwo = "Table-2";
+		final Table table = new Table(3, 2, tableTwo, stubConnectionHelper);
+		ITable stubTable = (ITable) UnicastRemoteObject.exportObject(table, 0);
+		registry.bind(tableTwo, stubTable);
 		
-		stub.setTable(table);
 		
-		Philosopher[] philosophers = new Philosopher[]{new Philosopher("Fabian", table, stub, false),
-													   new Philosopher("Luca", table, stub, false),
-													   new Philosopher("Benni", table, stub, false),
-													   new Philosopher("Max", table, stub, false),
-													   new Philosopher("Fabio", table, stub, false),
-													   new Philosopher("Sabine", table, stub, false),
-													   new Philosopher("Matti", table, stub, false),
-													   new Philosopher("Nico", table, stub, false),
-													   new Philosopher("Marius", table, stub, false),
-													   new Philosopher("Anselm", table, stub, false)
+		stubConnectionHelper.addTable(tableTwo);
+		
+		Philosopher[] philosophers = new Philosopher[]{new Philosopher("Fabian", stubTable, stubConnectionHelper, false),
+//													   new Philosopher("Luca", stubTable, stubConnectionHelper, false),
+//													   new Philosopher("Benni", stubTable, stubConnectionHelper, false),
+//													   new Philosopher("Max", stubTable, stubConnectionHelper, false),
+//													   new Philosopher("Fabio", stubTable, stubConnectionHelper, false),
+//													   new Philosopher("Sabine", stubTable, stubConnectionHelper, false),
+//													   new Philosopher("Matti", stubTable, stubConnectionHelper, false),
+//													   new Philosopher("Nico", stubTable, stubConnectionHelper, false),
+//													   new Philosopher("Marius", stubTable, stubConnectionHelper, false),
+//													   new Philosopher("Anselm", stubTable, stubConnectionHelper, false)
 				};
 		
 		for (int i = 0; i < philosophers.length; i++) {

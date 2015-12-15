@@ -1,5 +1,6 @@
 package DiningPhilosophersDistribute;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -46,9 +47,19 @@ public class Fork implements IFork {
 		boolean previous = this.isUsed.getAndSet(isUsed);
 
 		if (isUsed) {
-			System.out.println(philosopher.getPhilosopherName() + " hat die Gabel "+this.getSeat()+" bekommen, das meldet die Gabel.");
+			try {
+				System.out.println(philosopher.getPhilosopherName() + " hat die Gabel "+ this.getSeat().getNumber() +" bekommen, das meldet die Gabel.");
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} else {
-			System.out.println(philosopher.getPhilosopherName() + " hat die Gabel "+this.getSeat()+" zurückgegeben, das meldet die Gabel.");
+			try {
+				System.out.println(philosopher.getPhilosopherName() + " hat die Gabel "+ this.getSeat().getNumber() +" zurückgegeben, das meldet die Gabel.");
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		if (!(previous && this.isUsed()) && !this.isUsed()) {

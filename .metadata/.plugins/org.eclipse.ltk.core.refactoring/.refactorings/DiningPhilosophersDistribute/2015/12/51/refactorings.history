@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename local variable &apos;nameOthertable&apos; in &apos;DiningPhilosophersDistribute.Philosopher.run()&apos; to &apos;nameAnotherTable&apos;&#x0D;&#x0A;- Original project: &apos;DiningPhilosophersDistribute&apos;&#x0D;&#x0A;- Original element: &apos;DiningPhilosophersDistribute.Philosopher.run().nameOthertable&apos;&#x0D;&#x0A;- Renamed element: &apos;nameOthertable&apos;&#x0D;&#x0A;- Update references to refactored element" description="Rename local variable &apos;nameOthertable&apos;" id="org.eclipse.jdt.ui.rename.local.variable" input="/src&lt;DiningPhilosophersDistribute{Philosopher.java[Philosopher~run@nameOthertable!5084!5167!5091!5104!QString;!0!false" name="nameAnotherTable" references="true" stamp="1450201191430" version="1.0"/>
+</session>

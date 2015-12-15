@@ -16,6 +16,8 @@ public interface ITable extends Remote, Serializable {
 	
 	int getNumber() throws RemoteException;
 	
+	String getName() throws RemoteException;
+	
 	ISeat getLastSeatOfTable() throws RemoteException;
 	
 	int getNumberOfSeats() throws RemoteException;

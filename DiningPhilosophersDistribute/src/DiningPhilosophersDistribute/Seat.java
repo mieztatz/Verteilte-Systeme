@@ -54,7 +54,7 @@ public class Seat implements ISeat {
 		this.number = number;
 		this.table = table;
 		this.forkRight = new Fork(this);
-		System.err.println("Es wurde ein neuer Sitzplatz initalisiert!!!");
+//		System.err.println("Es wurde ein neuer Sitzplatz initalisiert!!!");
 	}
 	
 	public int getNumber() {

@@ -12,11 +12,13 @@ public class Table implements ITable {
 	private final ISeat[] seats;
 	private final int numberOfSeats;
 	private final int number;
+	private final String name;
 	private final IConnectionHelper connectionhelper;
 
-	public Table(final int numberOfSeats, final int number, final IConnectionHelper connectionHelper) {
+	public Table(final int numberOfSeats, final int number, final String name, final IConnectionHelper connectionHelper) {
 		this.numberOfSeats = numberOfSeats;
 		this.number = number;
+		this.name = name;
 		this.connectionhelper = connectionHelper;
 		if (numberOfSeats >= 0) {
 			seats = new ISeat[numberOfSeats];
@@ -24,11 +26,15 @@ public class Table implements ITable {
 			seats = new ISeat[DEFAULT_NUMBER_OF_SEATS];
 		}
 		initSeats();
-		System.err.println("Es wurde ein neuer Tisch initalisiert.");
+//		System.err.println("Es wurde ein neuer Tisch initalisiert.");
 	}
 	
 	public int getNumber() {
 		return number;
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 	
 	private void initSeats() {
