@@ -1,0 +1,107 @@
+package DiningPhilosophersDistribute;
+
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+/**
+ * Hochschule für angewandte Wissenschaften München
+ * Verteilte Softwaresysteme - Praktikum
+ * WS 2015/16
+ * Aufgabe 4 Verteilte Programmierung
+ * @author Diana irmscher - diana.irmscher@hm.edu
+ */
+
+
+public class MainOne {
+	
+	public static void main(String args[]) {
+		//jeder Tisch hat drei Sitzplätze mit einer rechten Gabel
+		try {
+			Registry registry = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+			
+			//ConnectionHelper in die Registry einbinden
+			ConnectionHelper connectionHelper = new ConnectionHelper();
+			IConnectionHelper stubConnectionHelper = (IConnectionHelper) UnicastRemoteObject.exportObject(connectionHelper, 0);
+			registry.bind("ConnectionHelper", stubConnectionHelper);
+			
+			//Tisch-1 in die Registry einbinden
+			String tableOne = "Table-1";
+			ITable table = new Table(9, 1, tableOne, stubConnectionHelper);
+			ITable stubTable = (ITable) UnicastRemoteObject.exportObject(table, 0);
+			registry.bind(tableOne, stubTable);
+	
+			System.err.println("Server ready: Bereit zur Anmeldung.");
+			
+			//den Tisch im ConnectionHelper anmelden
+			stubConnectionHelper.addTable(tableOne);
+			
+			
+			ErrorResistantPhilosopher[] philosophers = new ErrorResistantPhilosopher[]{ new ErrorResistantPhilosopher("Lukas", stubTable, stubConnectionHelper, false),
+															new ErrorResistantPhilosopher("Robert", stubTable, stubConnectionHelper, false),
+															new ErrorResistantPhilosopher("Bauer0", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Linda", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Tom", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Ersin", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Alu", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Markus", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Moritz", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Chris Pohl", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Friedrich", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Ludwig", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Hans", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Martin", stubTable, stubConnectionHelper, false)
+					};
+			
+			
+			new Thread(new StatePrinter(Arrays.asList(philosophers))).start();
+			
+			for (int i = 0; i < philosophers.length; i++) {
+				new Thread(philosophers[i]).start();
+			}
+			
+		} catch (Exception e) {
+			System.err.println("Server exception: " + e.toString());
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	public static class ErrorResistantPhilosopher implements Runnable {
+
+		private String name;
+		private ITable table;
+		private IConnectionHelper connectionHelper;
+		private boolean isVeryHungry;
+		private Philosopher philosoph;
+
+		public ErrorResistantPhilosopher(final String name, final ITable table, final IConnectionHelper connectionHelper, final boolean isVeryHungry) {
+			this.name = name;
+			this.table = table;
+			this.connectionHelper = connectionHelper;
+			this.isVeryHungry = isVeryHungry;
+		}
+		
+		@Override
+		public void run() {
+			while (true) {
+				try {
+					philosoph = new Philosopher(name, table, connectionHelper, isVeryHungry);
+					philosoph.run();
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.err.println("Recovering from error.....");
+				}
+			}
+		}
+
+		public Philosopher getPhilosoph() {
+			return philosoph;
+		}
+	}
+
+}

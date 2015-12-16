@@ -30,6 +30,14 @@ public interface ITable extends Remote, Serializable {
 	
 	boolean queueUpAndTryToEat(final Philosopher philosopher) throws RemoteException;
 	
+	boolean reserveFork(final Fork fork, final Philosopher philosopher) throws RemoteException;
+	
+	boolean unblockFork(final Fork fork, final Philosopher philosopher) throws RemoteException;
+	
+	void setNeighbourTable(final ITable neighbour) throws RemoteException;
+	
+	boolean reserveRightFork(Philosopher philosopher) throws RemoteException;
+	
 	
 	
 

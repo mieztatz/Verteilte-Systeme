@@ -1,5 +1,7 @@
 package DiningPhilosophersDistribute;
 
+import DiningPhilosophersDistribute.MainOne.ErrorResistantPhilosopher;
+
 /**
  * Hochschule für angewandte Wissenschaften München
  * Verteilte Softwaresysteme - Praktikum
@@ -8,41 +10,54 @@ package DiningPhilosophersDistribute;
  * @author Diana irmscher - diana.irmscher@hm.edu
  */
 
-public class TabelMaster extends Thread {
+public class TabelMaster implements Runnable {
 	
-	private final Table table;
+	private final ITable table;
 	
-	private final Philosopher[] philosophers;
+	private Iterable<ErrorResistantPhilosopher> philosophs;
 	
-	public TabelMaster(final Table table, final Philosopher[] philosophers) {
+	public TabelMaster(final ITable table, final Iterable<ErrorResistantPhilosopher> philosophs) {
 		this.table = table;
-		this.philosophers = new Philosopher[philosophers.length];
-		for (int i = 0; i < philosophers.length; i++) {
-			this.philosophers[i] = philosophers[i];
-		}
+		this.philosophs = philosophs;
 	}
 	
 	@Override
 	public void run() {
+		
+		while (true) {
+			try {
+				watchPhilosophers();
+				Thread.sleep(10000);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void watchPhilosophers() {
 		int difference = 0;
-		Philosopher low = this.philosophers[0];
-		Philosopher high = this.philosophers[1];
+		Philosopher low = null;
+		Philosopher high = null;
 		while(true) {
-			for(Philosopher p : this.philosophers) {
-				if(p.getProcess() < low.getProcess()) {
-					low = p;
+			try {
+				Thread.sleep(10000);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			for(ErrorResistantPhilosopher resistantPhilosoph : philosophs) {
+				if(resistantPhilosoph.getPhilosoph().getProcess() < low.getProcess()) {
+					low = resistantPhilosoph.getPhilosoph();
 				}
-				if(p.getProcess() > high.getProcess()) {
-					high = p;
+				if(resistantPhilosoph.getPhilosoph().getProcess() > high.getProcess()) {
+					high = resistantPhilosoph.getPhilosoph();
 				}
 			}
 			difference = Math.abs(high.getProcess() - low.getProcess());
 			if (difference >= 10) {
 				System.out.println("Der Philosoph " + high.getPhilosopherName() + "hat zu oft gegessen und wird vorübergehend gesperrt.");
+				high.dontEatForAWhile();
 			}
 		}
 	}
-	
-	
 
 }

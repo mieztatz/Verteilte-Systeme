@@ -12,6 +12,7 @@ public class StatePrinter implements Runnable {
 	
 	@Override
 	public void run() {
+		
 		while (true) {
 			try {
 				printCurrentState();
@@ -29,8 +30,8 @@ public class StatePrinter implements Runnable {
 			Philosopher philosoph = resistantPhilosoph.getPhilosoph();
 			b.append(philosoph.getPhilosopherName() + ": " + philosoph.getProcess() + "\n");
 		}
-		b.append("=END====================================\n");
+		b.append("=END======================================\n");
 		System.out.println(b.toString());
 	}
-	
+
 }

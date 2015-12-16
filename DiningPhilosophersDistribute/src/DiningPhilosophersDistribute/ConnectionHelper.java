@@ -27,8 +27,15 @@ public class ConnectionHelper implements IConnectionHelper{
 		}
 		
 		if (listOfTables.size() > 1) {
-			int privious = listOfTables.indexOf(table) - 1;
-			this.connectTableHasNewNighbour(privious);
+			int newTable = listOfTables.indexOf(table);
+			
+			//dem Vorgänger sagen, dass er jetzt einen Nachbarn hat
+			int priviousTable = listOfTables.indexOf(table) - 1;
+			
+			//dem neuen Tisch sagen, wer sein Nachfolger ist
+			int followingTable = (listOfTables.indexOf(table) + 1) % listOfTables.size();
+			
+			this.connectTableHasNewNighbour(priviousTable, followingTable, newTable);
 		}
 		
 		return wasSuccessful;
@@ -56,14 +63,21 @@ public class ConnectionHelper implements IConnectionHelper{
 		}
 	}
 	
-	public void connectTableHasNewNighbour(final int position) {
-		String privious = listOfTables.get(position);
+	public void connectTableHasNewNighbour(final int priviousTable, final int followingTable, final int newTable) {
+		String privious = listOfTables.get(priviousTable);
+		String following = listOfTables.get(followingTable);
+		String newTab = listOfTables.get(newTable);
+		
 		
 		try {
 			Registry registry = LocateRegistry.getRegistry();
-			ITable table = (ITable) registry.lookup(privious);
-			//tabel sagen, dass er einen neuen nachbar hat
-			// setter für nachbarn aufrufen
+			ITable tablePrivious = (ITable) registry.lookup(privious);
+			ITable tableFollow = (ITable) registry.lookup(following);
+			ITable tabelNew = (ITable) registry.lookup(newTab);
+			
+			tablePrivious.setNeighbourTable(tabelNew);
+			tabelNew.setNeighbourTable(tableFollow);
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

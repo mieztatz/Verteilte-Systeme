@@ -136,7 +136,7 @@ public class Philosopher implements Runnable, Serializable {
 			if (!this.isHungry()) {
 				meditate();
 			}
-
+			/** ************* ESSEN ************** **/
 			if (tryToEatLocal() || tryToEatRemote() || queueLocalAndTryToEat()) {
 				afterSuccessfulDinner();
 			}
@@ -223,6 +223,15 @@ public class Philosopher implements Runnable, Serializable {
 		this.setProcess(this.getProcess() + 1);
 		this.setHungry(false);
 		hasMeditate = false;
+	}
+	
+	public void dontEatForAWhile() {
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 }

@@ -31,7 +31,7 @@ public class MainTwo {
 		
 		stubConnectionHelper.addTable(tableTwo);
 		
-		Philosopher[] philosophers = new Philosopher[]{new Philosopher("Fabian", stubTable, stubConnectionHelper, false),
+		ErrorResistantPhilosopher[] philosophers = new ErrorResistantPhilosopher[]{new ErrorResistantPhilosopher("Fabian", stubTable, stubConnectionHelper, false),
 //													   new Philosopher("Luca", stubTable, stubConnectionHelper, false),
 //													   new Philosopher("Benni", stubTable, stubConnectionHelper, false),
 //													   new Philosopher("Max", stubTable, stubConnectionHelper, false),
@@ -51,6 +51,38 @@ public class MainTwo {
 			System.err.println("Client exception: " + e.toString());
 			e.printStackTrace();
 		}
-}
+	}
+	public static class ErrorResistantPhilosopher implements Runnable {
+
+		private String name;
+		private ITable table;
+		private IConnectionHelper connectionHelper;
+		private boolean isVeryHungry;
+		private Philosopher philosoph;
+
+		public ErrorResistantPhilosopher(final String name, final ITable table, final IConnectionHelper connectionHelper, final boolean isVeryHungry) {
+			this.name = name;
+			this.table = table;
+			this.connectionHelper = connectionHelper;
+			this.isVeryHungry = isVeryHungry;
+		}
+		
+		@Override
+		public void run() {
+			while (true) {
+				try {
+					philosoph = new Philosopher(name, table, connectionHelper, isVeryHungry);
+					philosoph.run();
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.err.println("Recovering from error.....");
+				}
+			}
+		}
+
+		public Philosopher getPhilosoph() {
+			return philosoph;
+		}
+	}
 
 }

@@ -43,17 +43,17 @@ public class MainOne {
 			ErrorResistantPhilosopher[] philosophers = new ErrorResistantPhilosopher[]{ new ErrorResistantPhilosopher("Lukas", stubTable, stubConnectionHelper, false),
 															new ErrorResistantPhilosopher("Robert", stubTable, stubConnectionHelper, false),
 															new ErrorResistantPhilosopher("Bauer0", stubTable, stubConnectionHelper, false),
-															new ErrorResistantPhilosopher("Linda", stubTable, stubConnectionHelper, false),
-															new ErrorResistantPhilosopher("Tom", stubTable, stubConnectionHelper, false),
-															new ErrorResistantPhilosopher("Ersin", stubTable, stubConnectionHelper, false),
-															new ErrorResistantPhilosopher("Alu", stubTable, stubConnectionHelper, false),
-															new ErrorResistantPhilosopher("Markus", stubTable, stubConnectionHelper, false),
-															new ErrorResistantPhilosopher("Moritz", stubTable, stubConnectionHelper, false),
-															new ErrorResistantPhilosopher("Chris Pohl", stubTable, stubConnectionHelper, false),
-															new ErrorResistantPhilosopher("Friedrich", stubTable, stubConnectionHelper, false),
-															new ErrorResistantPhilosopher("Ludwig", stubTable, stubConnectionHelper, false),
-															new ErrorResistantPhilosopher("Hans", stubTable, stubConnectionHelper, false),
-															new ErrorResistantPhilosopher("Martin", stubTable, stubConnectionHelper, false)
+//															new ErrorResistantPhilosopher("Linda", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Tom", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Ersin", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Alu", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Markus", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Moritz", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Chris Pohl", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Friedrich", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Ludwig", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Hans", stubTable, stubConnectionHelper, false),
+//															new ErrorResistantPhilosopher("Martin", stubTable, stubConnectionHelper, false)
 					};
 			
 			
@@ -62,6 +62,8 @@ public class MainOne {
 			for (int i = 0; i < philosophers.length; i++) {
 				new Thread(philosophers[i]).start();
 			}
+			
+			//TabelMaster tableMaster = new TableMaster(table, philosophers);
 			
 		} catch (Exception e) {
 			System.err.println("Server exception: " + e.toString());
