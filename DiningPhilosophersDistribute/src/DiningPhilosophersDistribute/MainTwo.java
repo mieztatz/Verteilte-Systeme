@@ -44,7 +44,7 @@ public class MainTwo {
 				};
 		
 		for (int i = 0; i < philosophers.length; i++) {
-			philosophers[i].start();
+			new Thread(philosophers[i]).start();
 		}
 		
 		} catch (Exception e) {

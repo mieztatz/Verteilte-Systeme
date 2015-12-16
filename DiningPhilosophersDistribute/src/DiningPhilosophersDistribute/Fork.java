@@ -101,10 +101,11 @@ public class Fork implements IFork {
 		synchronized (this.getQueue()) {
 			isAdded = this.queue.add(philosopher);
 		}
+		// TODO: possible race condition
 		System.out.println(philosopher.getPhilosopherName() + " hat sich in die Warteschlange eingereiht");
 		try {
 			System.out.println(philosopher.getPhilosopherName() + 
-					" wartet, bis er als n√§chstes dran ist, an Position " + this.queue.indexOf(philosopher));
+					" wartet, bis er als n‰chstes dran ist, an Position " + this.queue.indexOf(philosopher));
 			synchronized (philosopher) {
 				philosopher.wait();
 			}
@@ -124,13 +125,12 @@ public class Fork implements IFork {
 		if (!this.queue.isEmpty()) {
 			Philosopher nextPhilosopher = this.queue.get(0);
 			//Philosoph aufwecken
-            System.out.println("Der Status des Philosophen " 
-			              + nextPhilosopher.getPhilosopherName() + " ist: " + nextPhilosopher.getState() + ".");
+            System.out.println("Der Philosoph wird notified " + nextPhilosopher.getPhilosopherName());
             // kann nur aufgeweckt werden von letzten thread mit Monitor
             synchronized (nextPhilosopher) {
             	nextPhilosopher.notify();
 			}
-    		System.out.println("Der Status des Philosophen " + nextPhilosopher.getPhilosopherName() + " ist jetzt: " + nextPhilosopher.getState() + ".");
+            System.out.println("Der Philosoph wurde notified " + nextPhilosopher.getPhilosopherName());
     		//den Philosophen aus der Warteschlange entfernen
     		synchronized (this.queue) {
     			this.queue.remove(nextPhilosopher);

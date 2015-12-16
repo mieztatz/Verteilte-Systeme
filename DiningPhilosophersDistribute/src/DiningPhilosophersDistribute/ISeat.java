@@ -6,7 +6,7 @@ import java.rmi.RemoteException;
 
 public interface ISeat extends Remote, Serializable {
 	
-//	int getNumber() throws RemoteException;
+	int getNumber() throws RemoteException;
 //	
 //	ITable getTable() throws RemoteException;
 //	

@@ -1,5 +1,0 @@
-package DiningPhilosophersDistribute;
-
-public class TabelMaster extends Thread {
-
-}

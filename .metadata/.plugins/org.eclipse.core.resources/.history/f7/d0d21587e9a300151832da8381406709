@@ -1,0 +1,33 @@
+package DiningPhilosophersDistribute;
+
+public class StatePrinter implements Runnable {
+
+	private Iterable<Philosopher> philosophs;
+
+	StatePrinter(Iterable<Philosopher> philosophs) {
+		this.philosophs = philosophs;
+	}
+	
+	@Override
+	public void run() {
+		while (true) {
+			printCurrentState();
+			try {
+				Thread.sleep(30000);
+			} catch (InterruptedException e) {
+				// shall never happen
+			}
+		}
+	}
+
+	private void printCurrentState() {
+		StringBuilder b = new StringBuilder();
+		b.append("=START====================================\n");
+		for (Philosopher philosoph : philosophs) {
+			b.append(philosoph.getPhilosopherName() + ": " + philosoph.getProcess() + "\n");
+		}
+		b.append("=END====================================\n");
+		System.out.println(b.toString());
+	}
+	
+}

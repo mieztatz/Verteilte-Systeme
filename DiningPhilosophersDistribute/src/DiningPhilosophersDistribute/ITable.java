@@ -14,19 +14,21 @@ public interface ITable extends Remote, Serializable {
 //	
 //	ISeat getAnySeat() throws RemoteException;
 //	
-//	int getNumber() throws RemoteException;
+	int getNumber() throws RemoteException;
 //	
-//	String getName() throws RemoteException;
+	String getName() throws RemoteException;
 //	
 //	ISeat getLastSeatOfTable() throws RemoteException;
 //	
 //	int getNumberOfSeats() throws RemoteException;
 //	
-//	ISeat[] getSeats() throws RemoteException;
+	Seat[] getSeats() throws RemoteException;
 //	
 //	IFork getForkOfSeat(final int number) throws RemoteException;
 	
 	boolean tryToEat(final Philosopher philosopher) throws RemoteException;
+	
+	boolean queueUpAndTryToEat(final Philosopher philosopher) throws RemoteException;
 	
 	
 	

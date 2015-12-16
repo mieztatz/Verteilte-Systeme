@@ -14,6 +14,7 @@ public class Table implements ITable {
 	private final int number;
 	private final String name;
 	private final IConnectionHelper connectionhelper;
+	private ITable neighbour;
 
 	public Table(final int numberOfSeats, final int number, final String name, final IConnectionHelper connectionHelper) {
 		this.numberOfSeats = numberOfSeats;
@@ -26,6 +27,7 @@ public class Table implements ITable {
 			seats = new Seat[DEFAULT_NUMBER_OF_SEATS];
 		}
 		initSeats();
+		neighbour = this;
 	}
 	
 	public int getNumber() {
@@ -50,9 +52,9 @@ public class Table implements ITable {
 //		return numberOfSeats;
 //	}
 	
-//	public ISeat[] getSeats() {
-//		return this.seats;
-//	}
+	public Seat[] getSeats() {
+		return this.seats;
+	}
 	
 //	/** 
 //	 * Gibt den linken Nachbarn des übergebenen Platzes zurück.
@@ -86,6 +88,9 @@ public class Table implements ITable {
 	 * Gibt den linken Nachbarn des Tisches zurück.
 	 */
 	public Seat getLeftNeighbour(final Seat seat) {
+//		if (seat.getNumber() == seats.length - 1) {
+//			return null;
+//		}
 		return seats[(seat.getNumber() + 1) % seats.length];
 	}
 	
@@ -161,20 +166,33 @@ public class Table implements ITable {
 	
 	@Override
 	public boolean tryToEat(final Philosopher philosopher) throws RemoteException {
-		boolean wasSuccessful = false;
-		
 		Seat seat = this.getAnySeat();
 		System.out.println(philosopher.getPhilosopherName() + " betrachtet Sitznummer " + seat.getNumber() + " an Tisch " + this.getNumber());
-		
+		return tryToEat(philosopher, seat);
+	}
+
+	/**
+	 * Hier ist der Sitzplatz bereits bekannt.
+	 * @param philosopher
+	 * @param seat
+	 * @return
+	 */
+	private boolean tryToEat(final Philosopher philosopher, Seat seat) {
 		//Gabeln merken
 		Fork forkRight = seat.getForkRight();
 		Fork forkLeft = this.getLeftNeighbour(seat).getForkRight();
+		if (forkLeft == null) {
+			//forkLeft = this.neighbour.getSeats()[0].getForkRight();
+		}
 		
-		for(int i = 0; i < this.seats.length; i++) {
+		boolean wasSuccessful = false;
+		for(int i = 0; i < this.seats.length - 1 && !wasSuccessful; i++) {
 			wasSuccessful = tryToGetForks(forkRight, forkLeft, philosopher);
 			if (!wasSuccessful) {
 				System.out.println(philosopher.getPhilosopherName() + " konnte nicht essen und versucht es am Nachbarplatz.");
 				seat = this.getLeftNeighbour(seat);
+				forkRight = seat.getForkRight();
+				forkLeft = this.getLeftNeighbour(seat).getForkRight();
 				System.out.println(philosopher.getPhilosopherName() + " betrachtet Sitznummer " + seat.getNumber());
 				
 			}
@@ -253,6 +271,12 @@ public class Table implements ITable {
 	
 	public void eat(final Fork forkRight, final Fork forkLeft, final Philosopher philosopher) {
 		try {
+			System.err.println(philosopher.getPhilosopherName() + " isst an Platz " + forkRight.getSeat().getNumber() + " an Tisch " + this.getNumber());
+		} catch (RemoteException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
 			Thread.sleep(200);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -262,5 +286,21 @@ public class Table implements ITable {
 		this.unblockFork(forkRight, philosopher);
 		this.unblockFork(forkLeft, philosopher);
 		System.out.println(philosopher.getPhilosopherName() + " ist fertig und geht meditieren.");
+	}
+	
+	public boolean queueUpAndTryToEat(final Philosopher philosopher) throws RemoteException {
+		boolean wasAdded = false;
+		//jetzt die Plätze analysieren und die Philosophen zuweisen
+		int length = seats[0].getForkRight().getQueue().size();
+		int position = 0;
+		for (int i = 0; i < seats.length; i++) {
+			if (length > seats[i].getForkRight().getQueue().size()) {
+				length = seats[i].getForkRight().getQueue().size();
+				position = i;
+			}
+		}
+		wasAdded = seats[position].getForkRight().addPhilosopher(philosopher);
+		
+		return tryToEat(philosopher, seats[position]);
 	}
 }

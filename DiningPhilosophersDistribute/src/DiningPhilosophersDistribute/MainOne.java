@@ -4,6 +4,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Hochschule für angewandte Wissenschaften München
@@ -28,14 +30,9 @@ public class MainOne {
 			
 			//Tisch-1 in die Registry einbinden
 			String tableOne = "Table-1";
-			ITable table = new Table(3, 1, tableOne, stubConnectionHelper);
+			ITable table = new Table(9, 1, tableOne, stubConnectionHelper);
 			ITable stubTable = (ITable) UnicastRemoteObject.exportObject(table, 0);
 			registry.bind(tableOne, stubTable);
-			
-			//Sitze in Registry einbinden
-			ISeat seat1 = new Seat(0, stubTable);
-			ISeat seat2 = new Seat(1, stubTable);
-			ISeat seat3 = new Seat(2, stubTable);
 	
 			System.err.println("Server ready: Bereit zur Anmeldung.");
 			
@@ -43,24 +40,27 @@ public class MainOne {
 			stubConnectionHelper.addTable(tableOne);
 			
 			
-			Philosopher[] philosophers = new Philosopher[]{ new Philosopher("Lukas", stubTable, stubConnectionHelper, false),
-															new Philosopher("Robert", stubTable, stubConnectionHelper, false),
-//															new Philosopher("Bauer0", stubTable, stubConnectionHelper, false),
-//															new Philosopher("Linda", stubTable, stubConnectionHelper, false),
-//															new Philosopher("Tom", stubTable, stubConnectionHelper, false),
-//															new Philosopher("Ersin", stubTable, stubConnectionHelper, false),
-//															new Philosopher("Alu", stubTable, stubConnectionHelper, false),
-//															new Philosopher("Markus", stubTable, stubConnectionHelper, false),
-//															new Philosopher("Moritz", stubTable, stubConnectionHelper, false),
-//															new Philosopher("Chris Pohl", stubTable, stubConnectionHelper, false),
-//															new Philosopher("Friedrich", stubTable, stubConnectionHelper, false),
-//															new Philosopher("Ludwig", stubTable, stubConnectionHelper, false),
-//															new Philosopher("Hans", stubTable, stubConnectionHelper, false),
-//															new Philosopher("Martin", stubTable, stubConnectionHelper, false)
+			ErrorResistantPhilosopher[] philosophers = new ErrorResistantPhilosopher[]{ new ErrorResistantPhilosopher("Lukas", stubTable, stubConnectionHelper, false),
+															new ErrorResistantPhilosopher("Robert", stubTable, stubConnectionHelper, false),
+															new ErrorResistantPhilosopher("Bauer0", stubTable, stubConnectionHelper, false),
+															new ErrorResistantPhilosopher("Linda", stubTable, stubConnectionHelper, false),
+															new ErrorResistantPhilosopher("Tom", stubTable, stubConnectionHelper, false),
+															new ErrorResistantPhilosopher("Ersin", stubTable, stubConnectionHelper, false),
+															new ErrorResistantPhilosopher("Alu", stubTable, stubConnectionHelper, false),
+															new ErrorResistantPhilosopher("Markus", stubTable, stubConnectionHelper, false),
+															new ErrorResistantPhilosopher("Moritz", stubTable, stubConnectionHelper, false),
+															new ErrorResistantPhilosopher("Chris Pohl", stubTable, stubConnectionHelper, false),
+															new ErrorResistantPhilosopher("Friedrich", stubTable, stubConnectionHelper, false),
+															new ErrorResistantPhilosopher("Ludwig", stubTable, stubConnectionHelper, false),
+															new ErrorResistantPhilosopher("Hans", stubTable, stubConnectionHelper, false),
+															new ErrorResistantPhilosopher("Martin", stubTable, stubConnectionHelper, false)
 					};
 			
+			
+			new Thread(new StatePrinter(Arrays.asList(philosophers))).start();
+			
 			for (int i = 0; i < philosophers.length; i++) {
-				philosophers[i].start();
+				new Thread(philosophers[i]).start();
 			}
 			
 		} catch (Exception e) {
@@ -69,6 +69,39 @@ public class MainOne {
 		}
 		
 		
+	}
+	
+	public static class ErrorResistantPhilosopher implements Runnable {
+
+		private String name;
+		private ITable table;
+		private IConnectionHelper connectionHelper;
+		private boolean isVeryHungry;
+		private Philosopher philosoph;
+
+		public ErrorResistantPhilosopher(final String name, final ITable table, final IConnectionHelper connectionHelper, final boolean isVeryHungry) {
+			this.name = name;
+			this.table = table;
+			this.connectionHelper = connectionHelper;
+			this.isVeryHungry = isVeryHungry;
+		}
+		
+		@Override
+		public void run() {
+			while (true) {
+				try {
+					philosoph = new Philosopher(name, table, connectionHelper, isVeryHungry);
+					philosoph.run();
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.err.println("Recovering from error.....");
+				}
+			}
+		}
+
+		public Philosopher getPhilosoph() {
+			return philosoph;
+		}
 	}
 
 }

@@ -520,3 +520,42 @@ java.lang.NullPointerException
 	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:629)
 	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:584)
 	at org.eclipse.equinox.launcher.Main.run(Main.java:1438)
+!SESSION 2015-12-16 08:54:42.900 -----------------------------------------------
+eclipse.buildId=M20130204-1200
+java.version=1.8.0_65
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=de_DE
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY org.eclipse.ui 4 4 2015-12-16 11:16:29.467
+!MESSAGE Conflicting handlers for org.eclipse.debug.ui.commands.eof: {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@2a54919c} vs {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@2a54919c}
+
+!ENTRY org.eclipse.ui 4 4 2015-12-16 11:40:16.795
+!MESSAGE Conflicting handlers for org.eclipse.debug.ui.commands.eof: {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@2a54919c} vs {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@2a54919c}
+
+!ENTRY org.eclipse.ui 4 4 2015-12-16 11:44:46.139
+!MESSAGE Conflicting handlers for org.eclipse.debug.ui.commands.eof: {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@2a54919c} vs {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@2a54919c}
+
+!ENTRY org.eclipse.ui 4 4 2015-12-16 11:50:16.055
+!MESSAGE Conflicting handlers for org.eclipse.debug.ui.commands.eof: {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@3de67be7} vs {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@3de67be7}
+
+!ENTRY org.eclipse.ui 4 4 2015-12-16 11:50:44.875
+!MESSAGE Conflicting handlers for org.eclipse.debug.ui.commands.eof: {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@3de67be7} vs {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@3de67be7}
+
+!ENTRY org.eclipse.ui 4 4 2015-12-16 11:50:46.406
+!MESSAGE Conflicting handlers for org.eclipse.debug.ui.commands.eof: {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@3de67be7} vs {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@3de67be7}
+
+!ENTRY org.eclipse.ui 4 4 2015-12-16 11:50:55.903
+!MESSAGE Conflicting handlers for org.eclipse.debug.ui.commands.eof: {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@3de67be7} vs {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@3de67be7}
+
+!ENTRY org.eclipse.ui 4 4 2015-12-16 11:52:25.002
+!MESSAGE Conflicting handlers for org.eclipse.debug.ui.commands.eof: {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@3de67be7} vs {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@3de67be7}
+
+!ENTRY org.eclipse.ui 4 4 2015-12-16 11:52:25.002
+!MESSAGE Conflicting handlers for org.eclipse.debug.ui.commands.eof: {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@3de67be7} vs {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@3de67be7}
+
+!ENTRY org.eclipse.ui 4 4 2015-12-16 11:56:33.040
+!MESSAGE Conflicting handlers for org.eclipse.debug.ui.commands.eof: {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@3de67be7} vs {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@3de67be7}
+
+!ENTRY org.eclipse.ui 4 4 2015-12-16 11:56:33.040
+!MESSAGE Conflicting handlers for org.eclipse.debug.ui.commands.eof: {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@3de67be7} vs {org.eclipse.debug.internal.ui.views.console.ProcessConsolePageParticipant$EOFHandler@3de67be7}

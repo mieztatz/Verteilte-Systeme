@@ -1,6 +1,8 @@
 package DiningPhilosophersDistribute;
 
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -23,6 +25,12 @@ public class ConnectionHelper implements IConnectionHelper{
 		} else {
 			System.err.println("Der Tisch konnte nicht hinzugefügt werden.");
 		}
+		
+		if (listOfTables.size() > 1) {
+			int privious = listOfTables.indexOf(table) - 1;
+			this.connectTableHasNewNighbour(privious);
+		}
+		
 		return wasSuccessful;
 		
 	}
@@ -46,6 +54,21 @@ public class ConnectionHelper implements IConnectionHelper{
 			}
 			return listOfTables.get(tmp - 1);
 		}
+	}
+	
+	public void connectTableHasNewNighbour(final int position) {
+		String privious = listOfTables.get(position);
+		
+		try {
+			Registry registry = LocateRegistry.getRegistry();
+			ITable table = (ITable) registry.lookup(privious);
+			//tabel sagen, dass er einen neuen nachbar hat
+			// setter für nachbarn aufrufen
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 }
